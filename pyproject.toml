@@ -1,0 +1,16 @@
+[project]
+name = "openhti"
+description = "Lightweight hardware test interface"
+readme = "README.md"
+license = {file = "LICENSE"}
+dynamic = ["version"]
+dependencies = ["pyjwt", "quart"]
+requires-python = ">=3.11"
+classifiers = ["Private :: Do Not Upload"]
+
+[project.optional-dependencies]
+dev = ["black"]
+prod = ["uvicorn"]
+
+[tool.setuptools.dynamic]
+version = {attr = "openhti.__version__"}
