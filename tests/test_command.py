@@ -40,7 +40,7 @@ class CommandTestCase(IsolatedAsyncioTestCase):
             form=form,
             follow_redirects=True,
         )
-        print(response.headers)
+        print(response.path)
         self.assertEqual(response.headers["Location"], "/command")
 
 
