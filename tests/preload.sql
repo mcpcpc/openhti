@@ -11,4 +11,4 @@ INSERT INTO phase (name) VALUES
 INSERT INTO procedure (name, pid) VALUES
     ("name_1", "pid_1");
 INSERT INTO recipe (command_id, instrument_id, measurement_id, part_id, procedure_id, phase_id) VALUES
-    (1, 1, 1, 1, 1);
+    (1, 1, 1, 1, 1, 1);
