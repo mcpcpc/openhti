@@ -25,7 +25,7 @@ class PhaseResult(StrEnum):
 
 class MeasurementOutcome(StrEnum):
     """Measurement enumerated constants."""
- 
+
     PASS = "PASS"
     FAIL = "FAIL"
     UNSET = "UNSET"
@@ -51,7 +51,7 @@ class Measurement:
     lower_limit: float | None = None
     upper_limit: float | None = None
     validators: list[str] | None = None
-    docstring: str | None = None 
+    docstring: str | None = None
 
 
 @dataclass

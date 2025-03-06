@@ -26,11 +26,15 @@ procedure = Blueprint("procedure", __name__)
 async def read() -> tuple:
     """Read procedures callback."""
 
-    procedures = get_db().execute(
-        """
+    procedures = (
+        get_db()
+        .execute(
+            """
         SELECT * FROM procedure
         """
-    ).fetchall()
+        )
+        .fetchall()
+    )
     return await render_template(
         "procedure.html",
         procedures=procedures,

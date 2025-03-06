@@ -37,13 +37,11 @@ async def update() -> tuple:
     """Update settings callback."""
 
     form = (await request.form).copy().to_dict()
-    row = get_db().execute(
-        "SELECT * FROM setting WHERE key = 'password'"
-    ).fetchone()
+    row = get_db().execute("SELECT * FROM setting WHERE key = 'password'").fetchone()
     if isinstance(form.get("password"), str) and len(form["password"]) > 0:
         form["password"] = generate_password_hash(form["password"])
     else:
-        form["password"] = row['value']
+        form["password"] = row["value"]
     try:
         db = get_db()
         for key, value in form.items():
@@ -64,4 +62,3 @@ async def update() -> tuple:
     else:
         await flash("Settings updated.", "success")
     return redirect(url_for(".read"))
-

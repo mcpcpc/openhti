@@ -66,10 +66,10 @@ def create_app(test_config: dict = None) -> Quart:
     app.register_blueprint(procedure)
     app.register_blueprint(recipe)
     app.register_blueprint(setting)
-    
+
     @app.get("/")
     async def home():
         return await render_template("home.html")
-    
+
     app.jinja_env.globals["version"] = __version__
     return app

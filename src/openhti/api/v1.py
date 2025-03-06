@@ -283,7 +283,7 @@ async def create_measurement() -> tuple:
     except db.IntegrityError:
         return "Invalid parameter(s).", 400
     return "Measurement successfully created.", 201
- 
+
 
 @api.post("/part")
 @token_required

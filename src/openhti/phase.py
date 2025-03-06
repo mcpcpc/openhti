@@ -19,18 +19,22 @@ from .authorize import login_required
 from .database import get_db
 
 phase = Blueprint("phase", __name__)
- 
+
 
 @phase.get("/phase")
 @login_required
 async def read() -> tuple:
     """Read phases callback."""
 
-    phases = get_db().execute(
-        """
+    phases = (
+        get_db()
+        .execute(
+            """
         SELECT * FROM phase
         """
-    ).fetchall()
+        )
+        .fetchall()
+    )
     return await render_template(
         "phase.html",
         phases=phases,

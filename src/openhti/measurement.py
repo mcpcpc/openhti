@@ -26,11 +26,15 @@ measurement = Blueprint("measurement", __name__)
 async def read() -> tuple:
     """Read measurements callback."""
 
-    measurements = get_db().execute(
-        """
+    measurements = (
+        get_db()
+        .execute(
+            """
         SELECT * FROM measurement
         """
-    ).fetchall()
+        )
+        .fetchall()
+    )
     return await render_template(
         "measurement.html",
         measurements=measurements,
@@ -82,10 +86,7 @@ async def delete():
     form = await request.form
     measurement_ids = form.getlist("measurement_id")
     for measurement_id in measurement_ids:
-        db.execute(
-            "DELETE FROM measurement WHERE id = ?",
-            (measurement_id,)
-        )
+        db.execute("DELETE FROM measurement WHERE id = ?", (measurement_id,))
         db.commit()
     return redirect(url_for(".read"))
 

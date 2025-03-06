@@ -13,6 +13,7 @@ from socket import SHUT_RDWR
 from socket import SOCK_STREAM
 from socket import socket
 
+
 class TCP:
     """TCP instrumentation socket."""
 

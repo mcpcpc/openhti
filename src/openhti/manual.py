@@ -82,14 +82,14 @@ async def ws():
             form = loads(message)
             rows = get_db().execute(recipe_select_query, form).fetchall()
             procedure = Procedure(None, None)
-            await broker.publish(dumps([asdict(procedure),"RUNNING"]))
+            await broker.publish(dumps([asdict(procedure), "RUNNING"]))
             for temp in builder(rows, procedure):
                 procedure = temp
-                await broker.publish(dumps([asdict(temp),"RUNNING"]))
+                await broker.publish(dumps([asdict(temp), "RUNNING"]))
             if not procedure.run_passed:
-                await broker.publish(dumps([asdict(procedure),"FAIL"]))
+                await broker.publish(dumps([asdict(procedure), "FAIL"]))
             else:
-                await broker.publish(dumps([asdict(procedure),"PASS"]))
+                await broker.publish(dumps([asdict(procedure), "PASS"]))
 
     try:
         task = ensure_future(_receive())

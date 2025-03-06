@@ -26,11 +26,15 @@ command = Blueprint("command", __name__)
 async def read() -> tuple:
     """Read commands callback."""
 
-    commands = get_db().execute(
-        """
+    commands = (
+        get_db()
+        .execute(
+            """
         SELECT * FROM command
         """
-    ).fetchall()
+        )
+        .fetchall()
+    )
     return await render_template(
         "command.html",
         commands=commands,
@@ -81,8 +85,8 @@ async def delete():
             """
             DELETE FROM command WHERE id = ?
             """,
-            (command_id,)
-       )
+            (command_id,),
+        )
         db.commit()
     return redirect(url_for(".read"))
 

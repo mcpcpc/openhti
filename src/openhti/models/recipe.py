@@ -85,12 +85,12 @@ def builder(recipes: list, procedure: Procedure) -> Procedure:
             outcome=PhaseOutcome.PASS,  # assumed at start
             measurements=list(),
             start_time_millis=get_millis(),
-            end_time_millis=None, 
+            end_time_millis=None,
         )
         procedure.phases.append(phase)
         for recipe in phase_recipes:
             run(procedure, recipe)
-            #yield procedure
+            # yield procedure
             if procedure.phases[-1].outcome == PhaseOutcome.ERROR:
                 break  # terminate recipe
             yield procedure

@@ -27,36 +27,60 @@ async def read() -> tuple:
     """Read recipes callback."""
 
     number = request.args.get("number")
-    commands = get_db().execute(
-        """
+    commands = (
+        get_db()
+        .execute(
+            """
         SELECT * FROM command
         """
-    ).fetchall()
-    instruments = get_db().execute(
-        """
+        )
+        .fetchall()
+    )
+    instruments = (
+        get_db()
+        .execute(
+            """
         SELECT * FROM instrument
         """
-    ).fetchall()
-    measurements = get_db().execute(
-        """
+        )
+        .fetchall()
+    )
+    measurements = (
+        get_db()
+        .execute(
+            """
         SELECT * FROM measurement
         """
-    ).fetchall()
-    parts = get_db().execute(
-        """
+        )
+        .fetchall()
+    )
+    parts = (
+        get_db()
+        .execute(
+            """
         SELECT * FROM part
         """
-    ).fetchall()
-    phases = get_db().execute(
-        """
+        )
+        .fetchall()
+    )
+    phases = (
+        get_db()
+        .execute(
+            """
         SELECT * FROM phase
         """
-    ).fetchall()
-    procedures = get_db().execute(
-        """
+        )
+        .fetchall()
+    )
+    procedures = (
+        get_db()
+        .execute(
+            """
         SELECT * FROM procedure
         """
-    ).fetchall()
+        )
+        .fetchall()
+    )
     query = """
         SELECT
             recipe.id AS id,
@@ -109,7 +133,7 @@ async def read() -> tuple:
 async def create() -> tuple:
     """Create recipe callback."""
 
-    form = (await request.form).copy().to_dict() 
+    form = (await request.form).copy().to_dict()
     form["measurement_id"] = form.get("measurement_id")
     try:
         db = get_db()
@@ -132,7 +156,7 @@ async def create() -> tuple:
                 :procedure_id
             )
             """,
-            form
+            form,
         )
         db.commit()
     except db.ProgrammingError:
@@ -153,10 +177,7 @@ async def delete():
     form = await request.form
     recipe_ids = form.getlist("recipe_id")
     for recipe_id in recipe_ids:
-        db.execute(
-            "DELETE FROM recipe WHERE id = ?",
-            (recipe_id,)
-        )
+        db.execute("DELETE FROM recipe WHERE id = ?", (recipe_id,))
         db.commit()
     return redirect(url_for(".read"))
 
