@@ -31,7 +31,7 @@ class CommandTestCase(IsolatedAsyncioTestCase):
     def tearDown(self) -> None:
         self.db.close()
 
-    def test_command_create(self) -> None:
+    async def test_command_create(self) -> None:
         form = {"name": "name1", "scpi": "scpi1", "delay": 0}
         headers = {"Authorization": f"Bearer {self.token}"}
         response = await self.client.post(
