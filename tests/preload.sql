@@ -1,6 +1,6 @@
 INSERT INTO command (name, scpi, delay) VALUES
     ('name_1', '*IDN?', 0.0);
-INSERT INTO instrument (name, host, port) VALUES
+INSERT INTO instrument (name, hostname, port) VALUES
     ('name_1', '127.0.0.1', 5025);
 INSERT INTO measurement (name, precision, units, lower_limit, upper_limit) VALUES
     ('name_1', 3, 'units_1', 0.0, 1.0);
