@@ -7,7 +7,7 @@ from tempfile import NamedTemporaryFile
 from unittest import IsolatedAsyncioTestCase
 from unittest import main
 
-from minstrel import create_app
+from openhti import create_app
 
 
 class CommandTestCase(IsolatedAsyncioTestCase):
