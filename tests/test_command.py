@@ -35,7 +35,7 @@ class CommandTestCase(IsolatedAsyncioTestCase):
         form = {"name": "name1", "scpi": "scpi1", "delay": 0}
         headers = {"Authorization": f"Bearer {self.token}"}
         response = await self.client.post(
-            url="/command",
+            "/command",
             headers=headers,
             form=form,
         )
