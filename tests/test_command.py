@@ -39,7 +39,7 @@ class CommandTestCase(IsolatedAsyncioTestCase):
             headers=headers,
             form=form,
         )
-        aelf.assertEqual(response.headers["Location"], "/command")
+        self.assertEqual(response.headers["Location"], "/command")
 
 
 if __name__ == "__main__":
