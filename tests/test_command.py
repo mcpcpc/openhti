@@ -41,8 +41,7 @@ class CommandTestCase(IsolatedAsyncioTestCase):
             follow_redirects=True,
         )
         print(response.location)
-        print(type(response.status_code))
-        #self.assertEqual(response.headers["Location"], "/command")
+        self.assertEqual(response.status_code, 200)
 
 
 if __name__ == "__main__":
