@@ -90,7 +90,7 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
             "/authorize/logout",
             follow_redirects=True,
         )
-        print(dir(response))
+        print(dir(response.response))
         #self.assertEqual(response.status_code, 200)
         #self.assertEqual(response.headers.get("Location"), "/home")
         #async with self.client.session_transaction() as sess:
