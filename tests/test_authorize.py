@@ -49,12 +49,12 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
 
         mock_db = MagicMock()
         mock_db.execute.return_value.fetchone.return_value = {
-            "value": generate_password_hash("foo")
+            "value": generate_password_hash("bar")
         }
         mock_get_db.return_value = mock_db
         response = await self.client.post(
             "/authorize/login",
-            form={"password": "bar"},
+            form={"password": "foo"},
             follow_redirects=True,
         )
         self.assertEqual(response.status_code, 200)
