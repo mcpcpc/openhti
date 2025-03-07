@@ -25,8 +25,8 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
     def setUp(self):
         self.db = NamedTemporaryFile()
         self.app = create_app({"TESTING": True, "DATABASE": self.db.name})
-        self.client = self.app.test_client()
         self.app.test_cli_runner().invoke(args=["init-db"])
+        self.client = self.app.test_client()
         db = connect(self.db.name)
         db.executescript(self._preload)
         resp = self.app.test_cli_runner().invoke(args=["token"])
@@ -40,6 +40,7 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
         response = await self.client.get("/authorize/login")
         self.assertEqual(response.status_code, 200)
         html = await response.get_data(as_text=True)
+        breakpoint()
         self.assertIn("login", html.lower())
 
     @patch("openhti.authorize.get_db")
@@ -57,7 +58,6 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
             follow_redirects=True,
         )
         print(response.location)
-        breakpoint()
         #self.assertEqual(response.status_code, 302)
         #self.assertEqual(response.headers.get("Location"), "/authorize/login")
 
