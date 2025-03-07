@@ -21,6 +21,7 @@ class TestDatabase(IsolatedAsyncioTestCase):
         self.app = Quart(__name__)
         self.app.config["DATABASE"] = ":memory:"
         self.app.root_path = "/test/path"
+        self.ctx = self.app.app_context()
 
     async def test_get_db(self):
         """Test that `get_db` returns a SQLite connection and reuses it."""
@@ -41,7 +42,7 @@ class TestDatabase(IsolatedAsyncioTestCase):
         async with self.app.app_context():
             db = get_db()
             await close_db()
-        self.assertNotIn("db", self.app.app_context().g)
+        self.assertNotIn("db", self.ctx.g)
         mock_cursor.close.assert_called_once()
 
     @patch("builtins.open", new_callable=mock_open, read_data="CREATE TABLE test (id INTEGER);")
