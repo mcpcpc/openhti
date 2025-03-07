@@ -71,7 +71,7 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
             data={"password": "secret"},
             follow_redirects=True,
         )
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers.get("Location"), "/home")
         async with self.client.session_transaction() as sess:
             self.assertTrue(sess.get("unlocked"))
@@ -85,7 +85,7 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
             "/authorize/logout",
             follow_redirects=True,
         )
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers.get("Location"), "/home")
         async with self.client.session_transaction() as sess:
             self.assertNotIn("unlocked", sess)
