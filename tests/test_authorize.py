@@ -31,7 +31,7 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
 
     @patch("openhti.authorize.get_db")
     async def test_validate_missing_password(self, mock_get_db):
-        """Test that POST /authorize/login with an invalid password redirects back to login."""
+        """Test that POST /authorize/login with an missing password redirects back to login."""
 
         response = await self.client.post(
             "/authorize/login",
