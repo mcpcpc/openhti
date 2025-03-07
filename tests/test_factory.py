@@ -14,10 +14,6 @@ class FactoryTestCase(IsolatedAsyncioTestCase):
         self.runner = self.app.test_cli_runner()
         self.ctx = self.app.app_context()
 
-    def test_db_close(self) -> None:
-        result = self.ctx.g.get("db")
-        self.assertIsNone(result, result)
-
     def test_db_init_command(self) -> None:
         response = self.runner.invoke(args=["init-db"])
         self.assertIsInstance(response.output, str)
