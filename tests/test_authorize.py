@@ -4,7 +4,6 @@ from unittest.mock import MagicMock
 from unittest.mock import patch
 from quart import Quart
 from quart import session
-from quart.testing import QuartClient
 from werkzeug.security import generate_password_hash
 
 from openhti.authorize import authorize
@@ -15,7 +14,7 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
         self.app = Quart(__name__)
         self.app.secret_key = "testsecret"
         self.app.register_blueprint(authorize)
-        self.client: QuartClient = self.app.test_client()
+        self.client = self.app.test_client()
 
     async def test_login_get(self):
         """Test that GET /authorize/login returns the login template."""
