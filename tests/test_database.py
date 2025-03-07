@@ -45,11 +45,11 @@ class TestDatabase(IsolatedAsyncioTestCase):
             self.assertNotIn("db", self.app.app_context().g)
 
     @patch("builtins.open", new_callable=mock_open, read_data="CREATE TABLE test (id INTEGER);")
-    @patch("database.echo")
+    @patch("openhti.database.echo")
     def test_init_db_command(self, mock_echo, mock_file):
         """Test that `init_db_command` reads schema and initializes the DB."""
         
-        with patch("database.get_db") as mock_get_db:
+        with patch("openhti.database.get_db") as mock_get_db:
             mock_conn = MagicMock()
             mock_get_db.return_value = mock_conn
 
