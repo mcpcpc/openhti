@@ -12,6 +12,11 @@ from openhti.authorize import authorize
 class AuthorizeTestCase(IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.app = Quart(__name__)
+        
+        @self.app.get("/")
+        async def home():
+            return "home"
+ 
         self.app.secret_key = "testsecret"
         self.app.register_blueprint(authorize)
         self.client = self.app.test_client()
@@ -33,7 +38,7 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
         }
         mock_get_db.return_value = mock_db
         data = {"password": "wrong"}
-        response = await self.client.post("/authorize/login", data=data)
+        response = await self.client.post("/authorize/login", data=data, follow_redirects=True)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.headers.get("Location"), "/authorize/login")
 
@@ -47,7 +52,11 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
         }
         mock_get_db.return_value = mock_db
         data = {"password": "secret"}
-        response = await self.client.post("/authorize/login", data=data)
+        response = await self.client.post(
+            "/authorize/login",
+            data=data,
+            follow_redirects=True,
+        )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.headers.get("Location"), "/home")
         async with self.client.session_transaction() as sess:
@@ -58,7 +67,10 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
 
         async with self.client.session_transaction() as sess:
             sess["unlocked"] = True
-        response = await self.client.get("/authorize/logout")
+        response = await self.client.get(
+            "/authorize/logout",
+            follow_redirects=True,
+        )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.headers.get("Location"), "/home")
         async with self.client.session_transaction() as sess:
