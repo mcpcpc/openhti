@@ -32,6 +32,20 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
         self.assertIn("login", html.lower())
 
     @patch("openhti.authorize.get_db")
+    async def test_validate_missing_password(self, mock_get_db):
+        """Test that POST /authorize/login with an invalid password redirects back to login."""
+
+        response = await self.client.post(
+            "/authorize/login",
+            follow_redirects=True,
+        )
+        self.assertEqual(response.status_code, 200)
+        html = await response.get_data(as_text=True)
+        self.assertIn("Missing password.", html)
+        async with self.client.session_transaction() as sess:
+            self.assertNotIn("unlocked", sess)
+
+    @patch("openhti.authorize.get_db")
     async def test_validate_invalid_password(self, mock_get_db):
         """Test that POST /authorize/login with an invalid password redirects back to login."""
 
