@@ -19,7 +19,7 @@ from openhti.database import init_database
 class TestDatabase(IsolatedAsyncioTestCase):
     def setUp(self):
         self.app = Quart(__name__)
-        self.app.config["DATABASE"] = ":memory:"  # Use in-memory DB for testing
+        self.app.config["DATABASE"] = ":memory:"
         self.app.root_path = "/test/path"
 
     async def test_get_db(self):
