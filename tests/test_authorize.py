@@ -9,6 +9,8 @@ from unittest import main
 from unittest.mock import MagicMock
 from unittest.mock import patch
 
+from werkzeug.security import generate_password_hash
+
 from openhti import create_app
 
 
