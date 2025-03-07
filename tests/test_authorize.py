@@ -54,7 +54,7 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
         response = await self.client.post(
             "/authorize/login",
             data={"password": "wrong"},
-            #follow_redirects=True,
+            follow_redirects=True,
         )
         breakpoint()
         print(response.location)
