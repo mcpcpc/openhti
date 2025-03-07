@@ -88,6 +88,7 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
             follow_redirects=True,
         )
         self.assertEqual(response.status_code, 200)
+        print(response.location)
         self.assertEqual(response.headers.get("Location"), "/home")
         async with self.client.session_transaction() as sess:
             self.assertNotIn("unlocked", sess)
