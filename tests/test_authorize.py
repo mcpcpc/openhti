@@ -18,7 +18,7 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
     @classmethod
     def setUpClass(cls):
         cls._resources = Path(__file__).parent
-        path = cls._resources / "preload.sql"
+        path = cls._resources / "data.sql"
         with open(path, mode="r", encoding="utf-8") as f:
             cls._preload = f.read()
 
@@ -48,18 +48,17 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
 
         mock_db = MagicMock()
         mock_db.execute.return_value.fetchone.return_value = {
-            "value": generate_password_hash("secret")
+            "value": generate_password_hash("foo")
         }
         mock_get_db.return_value = mock_db
         response = await self.client.post(
             "/authorize/login",
-            data={"password": "wrong"},
+            data={"password": "bar"},
             follow_redirects=True,
         )
-        breakpoint()
-        print(response.location)
-        #self.assertEqual(response.status_code, 302)
-        #self.assertEqual(response.headers.get("Location"), "/authorize/login")
+        self.assertEqual(response.status_code, 200)
+        html = await response.get_data(as_text=True)
+        self.assertIn("Invalid password.", html)
 
     @patch("openhti.authorize.get_db")
     async def test_validate_valid_password(self, mock_get_db):
@@ -67,20 +66,17 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
 
         mock_db = MagicMock()
         mock_db.execute.return_value.fetchone.return_value = {
-            "value": generate_password_hash("secret")
+            "value": generate_password_hash("foo")
         }
         mock_get_db.return_value = mock_db
         response = await self.client.post(
             "/authorize/login",
-            data={"password": "secret"},
+            data={"password": "foo"},
             follow_redirects=True,
         )
-        #print(response.request.path)
-        print(dir(response.headers))
-        #self.assertEqual(response.status_code, 200)
-        #self.assertEqual(response.headers.get("Location"), "/home")
-        #async with self.client.session_transaction() as sess:
-        #    self.assertTrue(sess.get("unlocked"))
+        self.assertEqual(response.status_code, 200)
+        async with self.client.session_transaction() as sess:
+            self.assertTrue(sess.get("unlocked"))
 
     async def test_logout(self):
         """Test that GET /authorize/logout clears the session and redirects to home."""
