@@ -10,10 +10,10 @@ from sqlite3 import Connection
 from quart import Quart
 from pathlib import Path
 
-from database import get_db
-from database import close_db
-from database import init_db_command
-from database import init_database
+from openhti.database import get_db
+from openhti.database import close_db
+from openhti.database import init_db_command
+from openhti.database import init_database
 
 
 class TestDatabase(IsolatedAsyncioTestCase):
