@@ -25,7 +25,7 @@ class TestDatabase(IsolatedAsyncioTestCase):
     async def test_get_db(self):
         """Test that `get_db` returns a SQLite connection and reuses it."""
 
-        with self.app.app_context():
+        async with self.app.app_context():
             db1 = get_db()
             self.assertIsInstance(db1, Connection)
             db2 = get_db()
@@ -38,7 +38,7 @@ class TestDatabase(IsolatedAsyncioTestCase):
     async def test_close_db(self):
         """Test that `close_db` properly closes the connection."""
 
-        with self.app.app_context():
+        async with self.app.app_context():
             db = get_db()
             with patch.object(db, "close") as mock_close:
                 await close_db()
