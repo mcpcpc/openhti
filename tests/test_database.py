@@ -31,7 +31,7 @@ class TestDatabase(IsolatedAsyncioTestCase):
             self.assertIsInstance(db1, Connection)
             db2 = get_db()
             self.assertIs(db1, db2)
-        self.assertIn("db", self.ctx.g) 
+        self.assertIn("db", self.app.g) 
 
     @patch("openhti.database.connect")
     async def test_close_db(self, mock_connect):
@@ -43,7 +43,7 @@ class TestDatabase(IsolatedAsyncioTestCase):
         async with self.app.app_context():
             db = get_db()
             await close_db()
-        self.assertNotIn("db", self.ctx.g)
+            self.assertNotIn("db", self.app.g)
         mock_cursor.close.assert_called_once()
 
     @patch("builtins.open", new_callable=mock_open, read_data="CREATE TABLE test (id INTEGER);")
