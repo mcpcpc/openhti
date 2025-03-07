@@ -56,7 +56,7 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
             data={"password": "wrong"},
             follow_redirects=True,
         )
-        print(dir(response.location))
+        print(response.location) 
         #self.assertEqual(response.status_code, 302)
         #self.assertEqual(response.headers.get("Location"), "/authorize/login")
 
