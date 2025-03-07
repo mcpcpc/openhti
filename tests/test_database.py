@@ -30,10 +30,6 @@ class TestDatabase(IsolatedAsyncioTestCase):
             self.assertIsInstance(db1, Connection)
             db2 = get_db()
             self.assertIs(db1, db2)
-        #db1 = get_db()
-        #self.assertIsInstance(db1, Connection)
-        #db2 = get_db()
-        #self.assertIs(db1, db2)
 
     async def test_close_db(self):
         """Test that `close_db` properly closes the connection."""
@@ -44,24 +40,17 @@ class TestDatabase(IsolatedAsyncioTestCase):
                 await close_db()
                 mock_close.assert_called_once()
             self.assertNotIn("db", self.app.g)
-        #db = get_db()
-        #with patch.object(db, "close") as mock_close:
-        #    await close_db()
-        #    mock_close.assert_called_once()
-        #self.assertNotIn("db", self.ctx.g)
 
     @patch("builtins.open", new_callable=mock_open, read_data="CREATE TABLE test (id INTEGER);")
     @patch("openhti.database.echo")
     def test_init_db_command(self, mock_echo, mock_file):
         """Test that `init_db_command` reads schema and initializes the DB."""
         
+        mock_conn = MagicMock()
         with patch("openhti.database.get_db") as mock_get_db:
-            mock_conn = MagicMock()
             mock_get_db.return_value = mock_conn
-
             runner = self.app.test_cli_runner()
             result = runner.invoke(init_db_command)
-
             mock_file.assert_called_once_with(Path(self.app.root_path) / "schema.sql")
             mock_conn.executescript.assert_called_once_with("CREATE TABLE test (id INTEGER);")
             mock_echo.assert_called_once_with("Database initialized.")
@@ -72,7 +61,6 @@ class TestDatabase(IsolatedAsyncioTestCase):
         
         mock_app = MagicMock()
         init_database(mock_app)
-
         mock_app.teardown_appcontext.assert_called_once_with(close_db)
         mock_app.cli.add_command.assert_called_once_with(init_db_command)
 
