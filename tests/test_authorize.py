@@ -85,7 +85,7 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
             sess["unlocked"] = True
         response = await self.client.get(
             "/authorize/logout",
-            follow_redirects=True,
+            #follow_redirects=True,
         )
         self.assertEqual(response.status_code, 200)
         print(response.location)
