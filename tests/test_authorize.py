@@ -56,7 +56,7 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
             data={"password": "wrong"},
             follow_redirects=True,
         )
-        print(dir(response))
+        print(dir(response.location))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.headers.get("Location"), "/authorize/login")
 
@@ -75,7 +75,7 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
             follow_redirects=True,
         )
         #print(response.request.path)
-        print(dir(response))
+        print(response.headers)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers.get("Location"), "/home")
         async with self.client.session_transaction() as sess:
