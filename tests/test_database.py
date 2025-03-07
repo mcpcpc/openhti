@@ -36,6 +36,7 @@ class TestDatabase(IsolatedAsyncioTestCase):
 
         async with self.app.app_context():
             db = get_db()
+            breakpoint()
             with patch.object(db, "close") as mock_close:
                 await close_db()
                 mock_close.assert_called_once()
