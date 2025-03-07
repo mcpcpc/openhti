@@ -42,7 +42,7 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
         mock_get_db.return_value = mock_db
         response = await self.client.post(
             "/authorize/login",
-            data={"password": "bar"},
+            form={"password": "bar"},
             follow_redirects=True,
         )
         self.assertEqual(response.status_code, 200)
@@ -62,7 +62,7 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
         mock_get_db.return_value = mock_db
         response = await self.client.post(
             "/authorize/login",
-            data={"password": "foo"},
+            form={"password": "foo"},
             follow_redirects=True,
         )
         self.assertEqual(response.status_code, 200)
