@@ -37,7 +37,7 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.headers.get("Location"), "/authorize/login")
 
-    @patch("authorize.get_db")
+    @patch("openhti.authorize.get_db")
     async def test_validate_valid_password(self, mock_get_db):
         """Test that POST /authorize/login with a valid password sets session['unlocked']."""
 
