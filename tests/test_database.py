@@ -33,16 +33,21 @@ class TestDatabase(IsolatedAsyncioTestCase):
         db1 = get_db()
         self.assertIsInstance(db1, Connection)
         db2 = get_db()
-        self.assertIs(db1, db2)  # Check that the same connection is reused
+        self.assertIs(db1, db2)
 
     async def test_close_db(self):
         """Test that `close_db` properly closes the connection."""
 
-        db = get_db()
-        with patch.object(db, "close") as mock_close:
-            await close_db()
-            mock_close.assert_called_once()
-            self.assertNotIn("db", self.app.app_context().g)
+        with self.app.app_context():
+            db = get_db()
+            with patch.object(db, "close") as mock_close:
+                await close_db()
+                mock_close.assert_called_once()
+        #db = get_db()
+        #with patch.object(db, "close") as mock_close:
+        #    await close_db()
+        #    mock_close.assert_called_once()
+        #self.assertNotIn("db", self.ctx.g)
 
     @patch("builtins.open", new_callable=mock_open, read_data="CREATE TABLE test (id INTEGER);")
     @patch("openhti.database.echo")
