@@ -15,22 +15,11 @@ from openhti import create_app
 
 
 class AuthorizeTestCase(IsolatedAsyncioTestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls._resources = Path(__file__).parent
-        path = cls._resources / "data.sql"
-        with open(path, mode="r", encoding="utf-8") as f:
-            cls._preload = f.read()
-
     def setUp(self):
         self.db = NamedTemporaryFile()
         self.app = create_app({"TESTING": True, "DATABASE": self.db.name})
         self.app.test_cli_runner().invoke(args=["init-db"])
         self.client = self.app.test_client()
-        db = connect(self.db.name)
-        db.executescript(self._preload)
-        resp = self.app.test_cli_runner().invoke(args=["token"])
-        self.token = resp.output.rstrip()
 
     def tearDown(self):
         self.db.close()
@@ -59,6 +48,8 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
         self.assertEqual(response.status_code, 200)
         html = await response.get_data(as_text=True)
         self.assertIn("Invalid password.", html)
+        async with self.client.session_transaction() as sess:
+            self.assertNotIn("unlocked", sess)
 
     @patch("openhti.authorize.get_db")
     async def test_validate_valid_password(self, mock_get_db):
