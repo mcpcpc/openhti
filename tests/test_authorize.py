@@ -40,7 +40,6 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
         response = await self.client.get("/authorize/login")
         self.assertEqual(response.status_code, 200)
         html = await response.get_data(as_text=True)
-        breakpoint()
         self.assertIn("login", html.lower())
 
     @patch("openhti.authorize.get_db")
@@ -57,6 +56,7 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
             data={"password": "wrong"},
             follow_redirects=True,
         )
+        breakpoint()
         print(response.location)
         #self.assertEqual(response.status_code, 302)
         #self.assertEqual(response.headers.get("Location"), "/authorize/login")
