@@ -87,11 +87,9 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
             "/authorize/logout",
             follow_redirects=True,
         )
-        print(dir(response))
-        #self.assertEqual(response.status_code, 200)
-        #self.assertEqual(response.headers.get("Location"), "/home")
-        #async with self.client.session_transaction() as sess:
-        #    self.assertNotIn("unlocked", sess)
+        self.assertEqual(response.status_code, 200)
+        async with self.client.session_transaction() as sess:
+            self.assertNotIn("unlocked", sess)
 
 
 if __name__ == "__main__":
