@@ -7,7 +7,7 @@ from unittest import main
 from openhti import create_app
 
 
-class InitTestCase(IsolatedAsyncioTestCase):
+class FactoryTestCase(IsolatedAsyncioTestCase):
     def setUp(self) -> None:
         self.db = "file::memory:?cache=shared"
         self.app = create_app({"TESTING": True, "DATABASE": self.db})
