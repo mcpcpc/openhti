@@ -1,25 +1,37 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from pathlib import Path
+from sqlite3 import connect
+from tempfile import NamedTemporaryFile
 from unittest import IsolatedAsyncioTestCase
 from unittest import main
 from unittest.mock import MagicMock
 from unittest.mock import patch
-from quart import Quart
-from quart import session
-from werkzeug.security import generate_password_hash
 
-from openhti.authorize import authorize
+from openhti import create_app
 
 
 class AuthorizeTestCase(IsolatedAsyncioTestCase):
-    async def asyncSetUp(self):
-        self.app = Quart(__name__)
-        
-        @self.app.get("/")
-        async def home():
-            return "home"
- 
-        self.app.secret_key = "testsecret"
-        self.app.register_blueprint(authorize)
+    @classmethod
+    def setUpClass(cls):
+        cls._resources = Path(__file__).parent
+        path = cls._resources / "preload.sql"
+        with open(path, mode="r", encoding="utf-8") as f:
+            cls._preload = f.read()
+
+    def setUp(self):
+        self.db = NamedTemporaryFile()
+        self.app = create_app({"TESTING": True, "DATABASE": self.db.name})
         self.client = self.app.test_client()
+        self.app.test_cli_runner().invoke(args=["init-db"])
+        db = connect(self.db.name)
+        db.executescript(self._preload)
+        resp = self.app.test_cli_runner().invoke(args=["token"])
+        self.token = resp.output.rstrip()
+
+    def tearDown(self):
+        self.db.close()
 
     async def test_login_get(self):
         """Test that GET /authorize/login returns the login template."""
@@ -37,8 +49,11 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
             "value": generate_password_hash("secret")
         }
         mock_get_db.return_value = mock_db
-        data = {"password": "wrong"}
-        response = await self.client.post("/authorize/login", data=data, follow_redirects=True)
+        response = await self.client.post(
+            "/authorize/login",
+            data={"password": "wrong"},
+            follow_redirects=True,
+        )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.headers.get("Location"), "/authorize/login")
 
@@ -51,10 +66,9 @@ class AuthorizeTestCase(IsolatedAsyncioTestCase):
             "value": generate_password_hash("secret")
         }
         mock_get_db.return_value = mock_db
-        data = {"password": "secret"}
         response = await self.client.post(
             "/authorize/login",
-            data=data,
+            data={"password": "secret"},
             follow_redirects=True,
         )
         self.assertEqual(response.status_code, 302)
