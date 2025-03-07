@@ -39,13 +39,8 @@ class TestDatabase(IsolatedAsyncioTestCase):
         async with self.app.app_context():
             db = get_db()
             await close_db()
-            self.assertNotIn("db", self.app.g)
-        mock_connect.close.assert_called_once() 
-        #async with self.app.app_context():
-        #    with patch.object(get_db, "close") as mock_close:
-        #        await close_db()
-        #        mock_close.assert_called_once()
-        #    self.assertNotIn("db", self.app.g)
+        self.assertNotIn("db", self.app.g)
+        mock_connect.close.assert_called_once()
 
     @patch("builtins.open", new_callable=mock_open, read_data="CREATE TABLE test (id INTEGER);")
     @patch("openhti.database.echo")
