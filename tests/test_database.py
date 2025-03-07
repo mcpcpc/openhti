@@ -21,11 +21,6 @@ class TestDatabase(IsolatedAsyncioTestCase):
         self.app = Quart(__name__)
         self.app.config["DATABASE"] = ":memory:"  # Use in-memory DB for testing
         self.app.root_path = "/test/path"
-        self.ctx = self.app.app_context()
-        self.ctx.push()
-
-    def tearDown(self):
-        self.ctx.pop()
 
     async def test_get_db(self):
         """Test that `get_db` returns a SQLite connection and reuses it."""
@@ -48,6 +43,7 @@ class TestDatabase(IsolatedAsyncioTestCase):
             with patch.object(db, "close") as mock_close:
                 await close_db()
                 mock_close.assert_called_once()
+            self.assertNotIn("db", self.app.g)
         #db = get_db()
         #with patch.object(db, "close") as mock_close:
         #    await close_db()
