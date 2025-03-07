@@ -31,7 +31,7 @@ class TestDatabase(IsolatedAsyncioTestCase):
             self.assertIsInstance(db1, Connection)
             db2 = get_db()
             self.assertIs(db1, db2)
-        self.assertIn("db", self.app.g) 
+        self.assertIn("db", self.ctx.g) 
 
     @patch("openhti.database.connect")
     async def test_close_db(self, mock_connect):
