@@ -31,16 +31,21 @@ class TestDatabase(IsolatedAsyncioTestCase):
             db2 = get_db()
             self.assertIs(db1, db2)
 
-    async def test_close_db(self):
+    @patch("openhti.database.connect")
+    async def test_close_db(self, mock_connect):
         """Test that `close_db` properly closes the connection."""
 
+        mock_connect.close.return_value = None
         async with self.app.app_context():
             db = get_db()
-            breakpoint()
-            with patch.object(db, "close") as mock_close:
-                await close_db()
-                mock_close.assert_called_once()
+            await close_db()
             self.assertNotIn("db", self.app.g)
+        mock_connect.close.assert_called_once() 
+        #async with self.app.app_context():
+        #    with patch.object(get_db, "close") as mock_close:
+        #        await close_db()
+        #        mock_close.assert_called_once()
+        #    self.assertNotIn("db", self.app.g)
 
     @patch("builtins.open", new_callable=mock_open, read_data="CREATE TABLE test (id INTEGER);")
     @patch("openhti.database.echo")
