@@ -8,7 +8,6 @@ from unittest.mock import MagicMock
 from unittest.mock import mock_open
 from sqlite3 import Connection
 from quart import Quart
-from pathlib import Path
 
 from openhti.database import get_db
 from openhti.database import close_db
