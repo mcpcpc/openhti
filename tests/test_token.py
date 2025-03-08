@@ -21,7 +21,7 @@ class TestToken(IsolatedAsyncioTestCase):
         self.app.config["DATABASE"] = ":memory:"
         self.app.config["SECRET_KEY"] = "secret"
 
-    @patch("openhti.request")
+    @patch("openhti.token.request")
     async def test_token_required_valid(self, mock_request):
         """Test token_required decorator with a valid token."""
 
