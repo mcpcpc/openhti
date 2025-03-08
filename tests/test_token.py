@@ -36,7 +36,7 @@ class TestToken(IsolatedAsyncioTestCase):
         mock_view = MagicMock()
         mock_view.return_value = "Success"
         with self.app.app_context():
-            wrapped_view = token_required(self.mock_view)
+            wrapped_view = token_required(mock_view)
             result, status = await wrapped_view()
         breakpoint() 
         #self.assertEqual(result, "Success")
