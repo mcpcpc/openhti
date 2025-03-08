@@ -42,7 +42,7 @@ class TestDatabase(IsolatedAsyncioTestCase):
         async with self.app.app_context():
             db = get_db()
             await close_db()
-            self.assertNotIn("db", self.app.g)
+            self.assertNotIn("db", self.ctx.g)
         mock_cursor.close.assert_called_once()
 
     @patch("builtins.open", new_callable=mock_open, read_data="CREATE TABLE test (id INTEGER);")
