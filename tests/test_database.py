@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from pathlib import Path
 from unittest import IsolatedAsyncioTestCase
 from unittest import main
 from unittest.mock import patch
