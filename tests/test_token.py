@@ -33,7 +33,8 @@ class TestToken(IsolatedAsyncioTestCase):
         mock_request.headers.return_value = {
             "Authorization": f"Bearer {token}",
         }
-        wrapped_view = token_required(self.mock_view)
-        result, status = await wrapped_view()
+        with self.app.app_context()
+            wrapped_view = token_required(self.mock_view)
+            result, status = await wrapped_view()
         breakpoint() 
         #self.assertEqual(result, "Success")
