@@ -5,6 +5,7 @@ from unittest.mock import patch
 from json import dumps
 from urllib.error import HTTPError
 
+from openhti.models.base import Procedure
 from openhti.models.archive import ArchiveClient  # Replace with actual module name
 
 
@@ -35,10 +36,10 @@ class TestArchiveClient(TestCase):
 
     @patch("openhti.models.archive.urlopen")
     @patch("openhti.models.archive.asdict")
-    @patch("openhti.models.archive.Procedure")
-    def test_post_success(self, mock_procedure, mock_asdict, mock_urlopen) -> None:
+    def test_post_success(self, mock_asdict, mock_urlopen) -> None:
         """Test successful POST request."""
 
+        mock_procedure = MagicMock(spec=Procedure)
         mock_asdict.return_value = {"key": "value"}
         mock_response = MagicMock()
         mock_response.read.return_value = b'{"status": "success"}'
