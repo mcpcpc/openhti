@@ -78,3 +78,17 @@ systemctl --user start container-openhti.service
 systemctl --user enable container-openhti.service
 loginctl enable-linger pi
 ```
+
+## Test
+
+```shell
+python3 -m unittest
+```
+
+Run with coverage report.
+
+```shell
+coverage run -m unittest
+coverage report
+coverage html  # open htmlcov/index.html in a browser
+```
