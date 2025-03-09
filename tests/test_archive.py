@@ -6,7 +6,7 @@ from json import dumps
 from urllib.error import HTTPError
 
 from openhti.models.base import Procedure
-from openhti.models.archive import ArchiveClient  # Replace with actual module name
+from openhti.models.archive import ArchiveClient
 
 
 class TestArchiveClient(TestCase):
