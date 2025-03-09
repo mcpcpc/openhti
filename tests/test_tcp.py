@@ -20,7 +20,7 @@ class TestTCP(TestCase):
         self.assertIsNone(tcp.sock)
 
     @patch("openhti.models.tcp.socket")
-    def test_tcp_context_manager(self, mock_socket):
+    def test_tcp_context_manager(self, mock_socket_class):
         """Test TCP context manager (__enter__ and __exit__)."""
     
         mock_socket = mock_socket_class.return_value
