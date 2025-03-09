@@ -47,7 +47,6 @@ class TestArchiveClient(TestCase):
         response = self.client.post(mock_procedure)
         mock_asdict.assert_called_once_with(mock_procedure)
         mock_urlopen.assert_called_once()
-        breakpoint()
         self.assertEqual(response, '{"status": "success"}')
 
     @patch("openhti.models.archive.urlopen")
