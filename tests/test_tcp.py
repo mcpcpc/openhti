@@ -11,7 +11,7 @@ class TestTCP(TestCase):
     """Unit tests for the TCP class."""
 
     @patch("socket.socket")
-    def test_tcp_init(self, mock_socket_class):
+    def test_tcp_init(self, mock_socket_class) -> None:
         """Test TCP constructor."""
 
         tcp = TCP("127.0.0.1", 1234)
@@ -20,7 +20,7 @@ class TestTCP(TestCase):
         self.assertIsNone(tcp.sock)
 
     @patch("openhti.models.tcp.socket")
-    def test_tcp_context_manager(self, mock_socket_class):
+    def test_tcp_context_manager(self, mock_socket_class) -> None:
         """Test TCP context manager (__enter__ and __exit__)."""
     
         mock_socket = mock_socket_class.return_value
@@ -32,7 +32,7 @@ class TestTCP(TestCase):
         mock_socket.close.assert_called_once()
 
     @patch("openhti.models.tcp.socket")
-    def test_tcp_send(self, mock_socket_class):
+    def test_tcp_send(self, mock_socket_class) -> None:
         """Test send method."""
 
         mock_socket = mock_socket_class.return_value
@@ -41,7 +41,7 @@ class TestTCP(TestCase):
             mock_socket.sendall.assert_called_once_with(b"TEST")
 
     @patch("openhti.models.tcp.socket")
-    def test_tcp_query(self, mock_socket_class):
+    def test_tcp_query(self, mock_socket_class) -> None:
         """Test query method with mocked recv response."""
 
         mock_socket = mock_socket_class.return_value
