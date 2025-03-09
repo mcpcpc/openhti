@@ -46,7 +46,7 @@ class TestTCP(TestCase):
 
         mock_socket = mock_socket_class.return_value
         mock_socket.recv = MagicMock(
-            side_effect=[b"RESPON", b"SE\n"]  # Simulates chunked response
+            side_effect=[b"RESPON", b"SE\n"]
         )
         with TCP("127.0.0.1", 1234) as tcp:
             response = tcp.query(b"QUERY")
