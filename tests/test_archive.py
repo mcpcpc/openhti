@@ -41,7 +41,7 @@ class TestArchiveClient(TestCase):
 
         mock_procedure = MagicMock(spec=Procedure)
         mock_asdict.return_value = {"key": "value"}
-        mock_urlopen.__enter__.read.return_value = b'{"status": "success"}'
+        mock_urlopen.read.return_value = b'{"status": "success"}'
         response = self.client.post(mock_procedure)
         mock_asdict.assert_called_once_with(mock_procedure)
         mock_urlopen.assert_called_once()
