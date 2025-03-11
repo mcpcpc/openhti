@@ -62,9 +62,9 @@ Pull the latest container image and start an instance. Replace `/home/pi/instanc
 ```sh
 podman pull pull ghcr.io/mcpcpc/openhti:latest
 podman run -dt -p 8080:8080 \
-  --name uhtf \
+  --name openhti \
   --volume /home/pi/instance/:/app/instance \
-  uhtf
+  openhti
 ```
 
 Replace `pi` with the appropriate user home directory.
