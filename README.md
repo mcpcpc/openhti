@@ -53,8 +53,8 @@ podman pull ghcr.io/mcpcpc/openhti:latest
 Stop and/or remove any existing running instances.
 
 ```sh
-podman stop uhtf
-podman rm uhtf
+podman stop openhti
+podman rm openhti
 ```
 
 Pull the latest container image and start an instance. Replace `/home/pi/instance/` with the appropriate user home directory and instance path.
