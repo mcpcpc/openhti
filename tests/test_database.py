@@ -45,24 +45,30 @@ class TestDatabase(IsolatedAsyncioTestCase):
             self.assertNotIn("db", self.ctx.g)
         mock_cursor.close.assert_called_once()
 
-    @patch("builtins.open", new_callable=mock_open, read_data="CREATE TABLE test (id INTEGER);")
+    @patch(
+        "builtins.open",
+        new_callable=mock_open,
+        read_data="CREATE TABLE test (id INTEGER);",
+    )
     @patch("openhti.database.echo")
     def test_init_db_command(self, mock_echo, mock_file):
         """Test that `init_db_command` reads schema and initializes the DB."""
-        
+
         mock_conn = MagicMock()
         with patch("openhti.database.get_db") as mock_get_db:
             mock_get_db.return_value = mock_conn
             runner = self.app.test_cli_runner()
             result = runner.invoke(init_db_command)
             mock_file.assert_called_once_with(Path(self.app.root_path) / "schema.sql")
-            mock_conn.executescript.assert_called_once_with("CREATE TABLE test (id INTEGER);")
+            mock_conn.executescript.assert_called_once_with(
+                "CREATE TABLE test (id INTEGER);"
+            )
             mock_echo.assert_called_once_with("Database initialized.")
             self.assertEqual(result.exit_code, 0)
 
     def test_init_database(self):
         """Test that `init_database` registers teardown and CLI commands."""
-        
+
         mock_app = MagicMock()
         init_database(mock_app)
         mock_app.teardown_appcontext.assert_called_once_with(close_db)

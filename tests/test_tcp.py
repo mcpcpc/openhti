@@ -22,7 +22,7 @@ class TestTCP(TestCase):
     @patch("openhti.models.tcp.socket")
     def test_tcp_context_manager(self, mock_socket_class) -> None:
         """Test TCP context manager (__enter__ and __exit__)."""
-    
+
         mock_socket = mock_socket_class.return_value
         with TCP("127.0.0.1", 1234) as tcp:
             self.assertEqual(tcp.sock, mock_socket)
@@ -45,9 +45,7 @@ class TestTCP(TestCase):
         """Test query method with mocked recv response."""
 
         mock_socket = mock_socket_class.return_value
-        mock_socket.recv = MagicMock(
-            side_effect=[b"RESPON", b"SE\n"]
-        )
+        mock_socket.recv = MagicMock(side_effect=[b"RESPON", b"SE\n"])
         with TCP("127.0.0.1", 1234) as tcp:
             response = tcp.query(b"QUERY")
             self.assertEqual(response, b"RESPONSE\n")
