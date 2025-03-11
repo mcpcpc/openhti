@@ -1,0 +1,8 @@
+include CHANGELOG.md
+include LICENSE
+include src/openhti/schema.sql
+graft src/openhti/api
+graft src/openhti/static
+graft src/openhti/templates
+graft tests
+global-exclude *.pyc
