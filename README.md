@@ -63,7 +63,7 @@ Pull the latest container image and start an instance. Replace `/home/pi/instanc
 podman pull ghcr.io/mcpcpc/openhti:latest
 podman run -dt -p 8080:8080 \
   --name openhti \
-  --volume /home/pi/instance/:/app/instance \
+  --volume /home/pi/instance:/usr/local/var/openhti-instance \
   openhti
 ```
 
