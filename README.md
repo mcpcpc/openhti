@@ -60,7 +60,7 @@ podman rm openhti
 Pull the latest container image and start an instance. Replace `/home/pi/instance/` with the appropriate user home directory and instance path.
 
 ```sh
-podman pull pull ghcr.io/mcpcpc/openhti:latest
+podman pull ghcr.io/mcpcpc/openhti:latest
 podman run -dt -p 8080:8080 \
   --name openhti \
   --volume /home/pi/instance/:/app/instance \
