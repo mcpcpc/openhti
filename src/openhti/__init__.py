@@ -29,7 +29,7 @@ from .recipe import recipe
 from .setting import setting
 from .token import init_token
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 
 
 def create_app(test_config: dict = None) -> Quart:
