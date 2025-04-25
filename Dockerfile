@@ -5,4 +5,4 @@ WORKDIR /app
 COPY . /app
 RUN pip3 install .[prod]
 EXPOSE 8080
-CMD [ -f /app/instance/openhti.db ] || quart --app openhti init-db ; uvicorn --factory openhti:create_app
+CMD [ -f /usr/local/var/openhti-instance/openhti.db ] || quart --app openhti init-db ; uvicorn --factory openhti:create_app
