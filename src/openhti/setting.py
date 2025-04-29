@@ -64,7 +64,7 @@ async def update() -> tuple:
         await flash("Settings updated.", "success")
     return redirect(url_for(".read"))
 
-@setting.post("/setting/reset")
+@setting.get("/setting/reset")
 @login_required
 async def reset() -> tuple:
     """Re-initialize the database."""
