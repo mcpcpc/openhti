@@ -8,6 +8,8 @@ SPDX-License-Identifier: BSD-3-Clause
 Setting endpoints.
 """
 
+from pathlib import Path
+
 from quart import Blueprint
 from quart import current_app
 from quart import flash
