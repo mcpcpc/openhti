@@ -9,6 +9,7 @@ Setting endpoints.
 """
 
 from quart import Blueprint
+from quart import current_app
 from quart import flash
 from quart import redirect
 from quart import render_template
@@ -62,3 +63,14 @@ async def update() -> tuple:
     else:
         await flash("Settings updated.", "success")
     return redirect(url_for(".read"))
+
+@setting.post("/setting/initialize")
+@login_required
+async def reset() -> tuple:
+    """Re-initialize the database."""
+
+    db = get_db()
+    root_path = Path(current_app.root_path)
+    with open(root_path / "schema.sql") as file:
+        db.executescript(file.read())
+    return redirect(url_for("authorize.logout"))
