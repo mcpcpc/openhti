@@ -29,6 +29,11 @@ from .token import init_token
 __version__ = "0.0.3"
 
 
+def init_globals(app: Quart) -> Quart:
+    app.jinja_env.globals["app_version"] = __version__
+    return app
+
+
 def create_app(test_config: dict = None) -> Quart:
     """Application factory."""
 
@@ -49,6 +54,7 @@ def create_app(test_config: dict = None) -> Quart:
     except OSError:
         pass
 
+    init_globals(app)
     init_database(app)
     init_token(app)
     app.register_blueprint(api)
@@ -68,5 +74,4 @@ def create_app(test_config: dict = None) -> Quart:
     async def home():
         return await render_template("home.html")
 
-    app.jinja_env.globals["version"] = __version__
     return app
