@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """
 SPDX-FileCopyrightText: 2024 Gossamer Technologies
 SPDX-License-Identifier: BSD-3-Clause
