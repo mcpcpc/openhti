@@ -84,10 +84,15 @@ def get_table_checksum(db, table_name):
     Calculates a checksum for the logical content of a single table.
     """
 
-    db.execute(f"PRAGMA table_info({table_name});")
-    columns = [col[1] for col in db.fetchall()]
-    db.execute(f"SELECT * FROM {table_name} ORDER BY {', '.join(columns)};")
-    rows = db.fetchall()
+    rows = db.execute(
+        "PRAGMA table_info(?)",
+        (table_name,)
+    ).fetchall()
+    columns = [row[1] for row in rows]
+    rows = db.execute(
+       "SELECT * FROM ? ORDER BY ?",
+       (table_name, ', '.join(columns))
+    ).fetchall()
     hasher = sha256()
     for row in rows:
         hasher.update(str(row).encode('utf-8')) 
@@ -100,8 +105,17 @@ def get_checksum():
     """
 
     db = get_db()
-    db.execute("SELECT name FROM sqlite_master WHERE type='table';")
-    table_names = [row[0] for row in db.fetchall()]
+    rows = db.execute(
+        """
+        SELECT
+            name
+        FROM
+            sqlite_master
+        WHERE
+            type='table'
+        """
+    ).fetchall()
+    table_names = [row[0] for row in rows]
     checksum = sha256()
     for table_name in sorted(table_names):
         table_checksum = get_table_checksum(db, table_name)
