@@ -79,23 +79,8 @@ def init_database(app) -> None:
 
 
 def get_checksum():
-    db = get_db()
-    rows = db.execute(
-        """
-        SELECT
-            name
-        FROM
-            sqlite_master
-        WHERE
-            type='table'
-        """
-    ).fetchall()
-    table_names = [row[0] for row in rows]
-    checksum = []
-    for name in table_names:
-        checksum.append(
-            db.execute(
-                f"PRAGMA data_version"
-            ).fetchone()
-        )
+    row = get_db().execute(
+      "PRAGMA data_version"
+    ).fetchone()
+    checksum = dict(row)
     return checksum
