@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Ability to initialize/reset the database using the UI.
+- Ability to detect dirty/modified database tables using a checksum and manually reset the checksum.
 
 ## [0.0.2] - 2025-04-25
 
@@ -30,4 +31,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [0.0.1]: https://github.com/mcpcpc/openhti/releases/tag/0.0.1
 [0.0.2]: https://github.com/mcpcpc/openhti/releases/tag/0.0.2
-[0.0.3]: https://github.com/mcpcpc/openhti/releases/tag/0.0.2
+[0.0.3]: https://github.com/mcpcpc/openhti/releases/tag/0.0.3
