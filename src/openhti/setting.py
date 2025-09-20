@@ -30,7 +30,7 @@ async def read() -> tuple:
 
     settings = get_db().execute("SELECT * FROM setting").fetchall()
     func = lambda s: s["key"] == "checksum"
-    checksum = filter(func, settings)[0]["value"]
+    checksum = list(filter(func, settings))[0]["value"]
     dirty = checksum != get_checksum()
     print(dirty)
     return await render_template(
