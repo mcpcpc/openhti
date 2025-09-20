@@ -29,9 +29,15 @@ async def read() -> tuple:
     """Read settings callback."""
 
     settings = get_db().execute("SELECT * FROM setting").fetchall()
-    print(get_checksum())
-    return await render_template("setting.html", settings=settings)
-
+    checksum = filter(lambda s: s["key"] == "checksum", settings)["value"]
+    dirty = checksum != get_checksum()
+    print(dirty)
+    return await render_template(
+        "setting.html",
+        settings=settings,
+        dirty=dirty
+    )
+=
 
 @setting.post("/setting")
 @login_required
