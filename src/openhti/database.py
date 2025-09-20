@@ -87,7 +87,7 @@ def get_checksum():
             f"SELECT * FROM {table}"
         ).fetchall()
         if len(rows) > 0:
-            row = max(rows, key= lambda r: r["updated_t"])
+            row = max(rows, key= lambda r: r["updated_at"])
         else:
             row = {"updated_at": ""}
         ts = str(row["updated_at"])
