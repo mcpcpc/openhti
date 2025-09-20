@@ -79,10 +79,6 @@ def init_database(app) -> None:
 
 
 def get_checksum():
-    """
-    Calculates a checksum for the logical content of an entire database.
-    """
-
     db = get_db()
     rows = db.execute(
         """
@@ -99,7 +95,7 @@ def get_checksum():
     for name in table_names:
         checksum.append(
             db.execute(
-                f"PRAGMA {name}.data_version"
+                f"PRAGMA data_version"
             ).fetchone()
         )
     return checksum
