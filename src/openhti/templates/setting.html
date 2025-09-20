@@ -73,6 +73,19 @@
             </div>
             <div class="card bg-body shadow-sm border-0">
               <div class="card-header bg-body p-3 d-flex justify-content-between align-items-center" style="border-bottom: 1px solid var(--bs-tertiary-bg)">
+                <h5 class="card-title m-0">Database Health</h5>
+              </div>
+              <div class="card-body p-3 mb-3">
+                {% if dirty %}
+                <p>The database is sitting in a <b>dirty</b>, which means someone has created or updated one or more database tables since the last known state.</p>
+                {% else %}
+                <p>The database is <b>clean</b>, which means there have been know table modifications since the last known state.</p>
+                {% endif %}
+                <a class="btn btn-danger" href="{{ url_for('.clean') }}" role="button">Clean</a>
+              </div>
+            </div>
+            <div class="card bg-body shadow-sm border-0">
+              <div class="card-header bg-body p-3 d-flex justify-content-between align-items-center" style="border-bottom: 1px solid var(--bs-tertiary-bg)">
                 <h5 class="card-title m-0">Database Reset</h5>
               </div>
               <div class="card-body p-3 mb-3">
