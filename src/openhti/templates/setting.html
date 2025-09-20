@@ -81,7 +81,7 @@
                 {% if dirty %}
                 <p>The database is <b class="text-danger">dirty</b>, which means one or more tables have been modified since the last known state.</p>
                 {% else %}
-                <p>The database is <b class="text-primary">clean</b>, which means there have been know table modifications since the last known state.</p>
+                <p>The database is <b class="text-primary">clean</b>, which means there have been no known table modifications since the last known state.</p>
                 {% endif %}
                 <a class="btn btn-danger" href="{{ url_for('.clean') }}" role="button">Clean</a>
               </div>
