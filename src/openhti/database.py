@@ -83,12 +83,14 @@ def get_checksum():
     db = get_db()
     checksum = sha256()
     for table in ("command", "instrument", "part", "phase", "procedure", "recipe"):
-        rows = db.execute(
-            f"SELECT * FROM {table}"
-        ).fetchall()
+        rows = db.execute(f"SELECT * FROM {table}").fetchall()
         if len(rows) == 0:
-            continue
-        row = max(rows, key= lambda r: r["updated_at"])
-        ts = str(row["updated_at"])
+            continue  # no data
+        row_c = max(rows, key= lambda r: r["created_at"])
+        row_u = max(rows, key= lambda r: r["updated_at"])
+        if row_c["created_at"] > row_u["updated_at"]:
+            ts = str(row_c["created_at"])
+        else:
+            ts = str(row_u["updated_at"])
         checksum.update(ts.encode('utf-8'))
     return checksum.hexdigest()
