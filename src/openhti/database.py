@@ -19,6 +19,8 @@ from quart import current_app
 from quart import g
 from quart.cli import with_appcontext
 
+CHECKSUM_TABLE_NAMES = ("command", "instrument", "part", "phase", "procedure", "recipe")
+
 
 def convert_datetime(value: bytes):
     """
@@ -82,7 +84,7 @@ def init_database(app) -> None:
 def get_checksum():
     db = get_db()
     checksum = sha256()
-    for table in ("command", "instrument", "part", "phase", "procedure", "recipe"):
+    for table in CHECKSUM_TABLE_NAMES:
         rows = db.execute(f"SELECT * FROM {table}").fetchall()
         if len(rows) == 0:
             continue  # no data
