@@ -19,7 +19,14 @@ from quart import current_app
 from quart import g
 from quart.cli import with_appcontext
 
-CHECKSUM_TABLE_NAMES = ("command", "instrument", "part", "phase", "procedure", "recipe")
+CHECKSUM_TABLE_NAMES = (
+    "command",
+    "instrument",
+    "part",
+    "phase",
+    "procedure",
+    "recipe"
+)
 
 
 def convert_datetime(value: bytes):
