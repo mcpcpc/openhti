@@ -17,6 +17,7 @@ from quart import url_for
 from werkzeug.security import generate_password_hash
 
 from .authorize import login_required
+from .database import get_checksum
 from .database import get_db
 
 setting = Blueprint("setting", __name__)
@@ -28,6 +29,7 @@ async def read() -> tuple:
     """Read settings callback."""
 
     settings = get_db().execute("SELECT * FROM setting").fetchall()
+    print(get_checksum())
     return await render_template("setting.html", settings=settings)
 
 
@@ -62,6 +64,7 @@ async def update() -> tuple:
     else:
         await flash("Settings updated.", "success")
     return redirect(url_for(".read"))
+
 
 @setting.get("/setting/reset")
 @login_required

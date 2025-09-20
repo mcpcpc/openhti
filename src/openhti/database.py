@@ -6,6 +6,7 @@ Database initializer.
 """
 
 from datetime import datetime
+from hashlib import sha256
 from pathlib import Path
 from sqlite3 import connect
 from sqlite3 import PARSE_DECLTYPES
@@ -76,3 +77,33 @@ def init_database(app) -> None:
 
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
+
+
+def get_table_checksum(db, table_name):
+    """
+    Calculates a checksum for the logical content of a single table.
+    """
+
+    db.execute(f"PRAGMA table_info({table_name});")
+    columns = [col[1] for col in db.fetchall()]
+    db.execute(f"SELECT * FROM {table_name} ORDER BY {', '.join(columns)};")
+    rows = db.fetchall()
+    hasher = sha256()
+    for row in rows:
+        hasher.update(str(row).encode('utf-8')) 
+    return hasher.hexdigest()
+
+
+def get_checksum():
+    """
+    Calculates a checksum for the logical content of an entire database.
+    """
+
+    db = get_db()
+    db.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    table_names = [row[0] for row in db.fetchall()]
+    checksum = sha256()
+    for table_name in sorted(table_names):
+        table_checksum = get_table_checksum(db, table_name)
+        checksum.update(table_checksum.encode('utf-8'))
+    return checksum.hexdigest()
