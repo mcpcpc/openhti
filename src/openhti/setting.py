@@ -76,3 +76,22 @@ async def reset() -> tuple:
     with open(root_path / "schema.sql") as file:
         db.executescript(file.read())
     return redirect(url_for("authorize.logout"))
+
+
+@setting.get("/setting/clean")
+@login_required
+async def clean() -> tuple:
+    """Reset dirty database to clean."""
+
+    db = get_db()
+    db.execute(
+        """
+        UPDATE setting SET
+            updated_at = CURRENT_TIMESTAMP,
+            value = ?
+        WHERE key = 'checksum'
+        """,
+        (get_checksum(),)
+    )
+    db.commit()
+    return redirect(url_for("setting.read"))
