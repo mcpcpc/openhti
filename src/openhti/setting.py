@@ -37,7 +37,7 @@ async def read() -> tuple:
         settings=settings,
         dirty=dirty
     )
-=
+
 
 @setting.post("/setting")
 @login_required
