@@ -84,9 +84,8 @@ def get_table_checksum(db, table_name):
     Calculates a checksum for the logical content of a single table.
     """
 
-    print(table_name)
     rows = db.execute(
-        "PRAGMA table_info(?)",
+        "PRAGMA table_info(?);",
         (table_name,)
     ).fetchall()
     columns = [row[1] for row in rows]
