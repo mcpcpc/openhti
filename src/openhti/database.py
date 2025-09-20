@@ -6,6 +6,7 @@ Database initializer.
 """
 
 from datetime import datetime
+from hashlib import sha256
 from pathlib import Path
 from sqlite3 import connect
 from sqlite3 import PARSE_DECLTYPES
@@ -79,8 +80,16 @@ def init_database(app) -> None:
 
 
 def get_checksum():
-    row = get_db().execute(
-      "PRAGMA data_version"
-    ).fetchone()
-    checksum = dict(row)
+    db = get_db()
+    checksum = sha256()
+    for table in ("command", "instrument", "part", "phase", "procedure", "recipe"):
+        rows = db.execute(
+            f"SELECT * FROM {table}"
+        ).fetchall()
+        if len(rows > 0):
+            row = max(rows, key= lambda r: r["updated_t"])
+        else:
+            row = {"updated_at": ""}
+        ts = str(row["updated_at"])
+        checksum.update(ts.encode('utf-8'))
     return checksum
