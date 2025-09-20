@@ -88,9 +88,12 @@ def get_checksum():
             continue  # no data
         row_c = max(rows, key= lambda r: r["created_at"])
         row_u = max(rows, key= lambda r: r["updated_at"])
-        if row_c["created_at"] > row_u["updated_at"]:
+        if row_u["updated_at"] is None:
             ts = str(row_c["created_at"])
         else:
-            ts = str(row_u["updated_at"])
+            if row_c["created_at"] > row_u["updated_at"]:
+                ts = str(row_c["created_at"])
+            else:
+                ts = str(row_u["updated_at"])
         checksum.update(ts.encode('utf-8'))
     return checksum.hexdigest()
