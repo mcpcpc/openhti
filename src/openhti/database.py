@@ -19,14 +19,7 @@ from quart import current_app
 from quart import g
 from quart.cli import with_appcontext
 
-CHECKSUM_TABLE_NAMES = (
-    "command",
-    "instrument",
-    "part",
-    "phase",
-    "procedure",
-    "recipe"
-)
+CHECKSUM_TABLE_NAMES = ("command", "instrument", "part", "phase", "procedure", "recipe")
 
 
 def convert_datetime(value: bytes):
@@ -95,8 +88,8 @@ def get_checksum():
         rows = db.execute(f"SELECT * FROM {table}").fetchall()
         if len(rows) == 0:
             continue  # no data
-        row_c = max(rows, key= lambda r: r["created_at"])
-        row_u = max(rows, key= lambda r: r["updated_at"])
+        row_c = max(rows, key=lambda r: r["created_at"])
+        row_u = max(rows, key=lambda r: r["updated_at"])
         if row_u["updated_at"] is None:
             ts = str(row_c["created_at"])
         else:
@@ -104,5 +97,5 @@ def get_checksum():
                 ts = str(row_c["created_at"])
             else:
                 ts = str(row_u["updated_at"])
-        checksum.update(ts.encode('utf-8'))
+        checksum.update(ts.encode("utf-8"))
     return checksum.hexdigest()

@@ -32,11 +32,7 @@ async def read() -> tuple:
     func = lambda s: s["key"] == "checksum"
     checksum = list(filter(func, settings))[0]["value"]
     dirty = checksum != get_checksum()
-    return await render_template(
-        "setting.html",
-        settings=settings,
-        dirty=dirty
-    )
+    return await render_template("setting.html", settings=settings, dirty=dirty)
 
 
 @setting.post("/setting")
@@ -97,7 +93,7 @@ async def clean() -> tuple:
             value = ?
         WHERE key = 'checksum'
         """,
-        (get_checksum(),)
+        (get_checksum(),),
     )
     db.commit()
     return redirect(url_for("setting.read"))
