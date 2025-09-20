@@ -86,10 +86,9 @@ def get_checksum():
         rows = db.execute(
             f"SELECT * FROM {table}"
         ).fetchall()
-        if len(rows) > 0:
-            row = max(rows, key= lambda r: r["updated_at"])
-        else:
-            row = {"updated_at": ""}
+        if len(rows) == 0:
+            continue
+        row = max(rows, key= lambda r: r["updated_at"])
         ts = str(row["updated_at"])
         checksum.update(ts.encode('utf-8'))
-    return checksum
+    return checksum.hexdigest()
