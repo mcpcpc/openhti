@@ -90,7 +90,7 @@ def get_table_checksum(db, table_name):
     columns = [row[1] for row in rows]
     rows = db.execute(
        "SELECT * FROM ? ORDER BY ?",
-       (table_name, ', '.join(columns))
+       [table_name, ', '.join(columns)]
     ).fetchall()
     hasher = sha256()
     for row in rows:
