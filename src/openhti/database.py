@@ -94,7 +94,7 @@ def get_checksum() -> str:
         if len(rows) == 0:
             continue  # no data
         for row in rows:
-            values = map(str, dict(row).values())
-            data = ",".join(values)
+            values = dict(row).values()
+            data = ",".join(map(str, values))
             checksum.update(data.encode("utf-8"))
     return checksum.hexdigest()
