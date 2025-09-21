@@ -93,6 +93,7 @@ def get_checksum():
         if len(list(rows_f)) == 0:
             row_u = {"updated_at": None}
         else:
+            print(list(rows_f))
             row_u = max(rows_f, key=lambda r: r["updated_at"])
         if row_u["updated_at"] is None:
             ts = str(row_c["created_at"])
