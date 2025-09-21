@@ -10,6 +10,7 @@ from unittest.mock import mock_open
 from sqlite3 import Connection
 from quart import Quart
 
+from openhti.database import get_checksum
 from openhti.database import get_db
 from openhti.database import close_db
 from openhti.database import init_db_command
@@ -73,6 +74,16 @@ class TestDatabase(IsolatedAsyncioTestCase):
         init_database(mock_app)
         mock_app.teardown_appcontext.assert_called_once_with(close_db)
         mock_app.cli.add_command.assert_called_once_with(init_db_command)
+
+    async def test_get_checksum(self):
+        """Test that `get_checksum` returns the correct hashed SHA255 value."""
+
+        async with self.app.app_context():
+            result = get_checksum()
+        self.assertEqual(
+            result,
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        )
 
 
 if __name__ == "__main__":
