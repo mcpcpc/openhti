@@ -89,11 +89,11 @@ def get_checksum():
         if len(rows) == 0:
             continue  # no data
         row_c = max(rows, key=lambda r: r["created_at"])
-        rows_f = filter(lambda r: r["updated_at"], rows)
-        if len(list(rows_f)) == 0:
+        rows_f = list(filter(lambda r: r["updated_at"], rows))
+        if len(rows_f) == 0:
             row_u = {"updated_at": None}
         else:
-            print(list(rows_f))
+            print(rows_f)
             row_u = max(rows_f, key=lambda r: r["updated_at"])
         if row_u["updated_at"] is None:
             ts = str(row_c["created_at"])
