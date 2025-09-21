@@ -81,30 +81,12 @@ def init_database(app) -> None:
     app.cli.add_command(init_db_command)
 
 
-def get_checksum1():
-    db = get_db()
-    checksum = sha256()
-    for table in CHECKSUM_TABLE_NAMES:
-        rows = db.execute(f"SELECT * FROM {table}").fetchall()
-        if len(rows) == 0:
-            continue  # no data
-        row_c = max(rows, key=lambda r: r["created_at"])
-        rows_f = list(filter(lambda r: r["updated_at"], rows))
-        if len(rows_f) == 0:
-            row_u = {"updated_at": None}
-        else:
-            row_u = max(rows_f, key=lambda r: r["updated_at"])
-        if row_u["updated_at"] is None:
-            ts = str(row_c["created_at"])
-        else:
-            if row_c["created_at"] > row_u["updated_at"]:
-                ts = str(row_c["created_at"])
-            else:
-                ts = str(row_u["updated_at"])
-        checksum.update(ts.encode("utf-8"))
-    return checksum.hexdigest()
+def get_checksum() -> str:
+    """
+    Compute a logical, content-level checksum (stable across
+    VACUUM/defrag).
+    """
 
-def get_checksum():
     db = get_db()
     checksum = sha256()
     for table in CHECKSUM_TABLE_NAMES:
