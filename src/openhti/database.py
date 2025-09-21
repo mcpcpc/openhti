@@ -81,7 +81,7 @@ def init_database(app) -> None:
     app.cli.add_command(init_db_command)
 
 
-def get_checksum():
+def get_checksum1():
     db = get_db()
     checksum = sha256()
     for table in CHECKSUM_TABLE_NAMES:
@@ -102,4 +102,16 @@ def get_checksum():
             else:
                 ts = str(row_u["updated_at"])
         checksum.update(ts.encode("utf-8"))
+    return checksum.hexdigest()
+
+def get_checksum():
+    db = get_db()
+    checksum = sha256()
+    for table in CHECKSUM_TABLE_NAMES:
+        rows = db.execute(f"SELECT * FROM {table}").fetchall()
+        if len(rows) == 0:
+            continue  # no data
+        for row in rows:
+            data = ",".(dict(row).values())
+            checksum.update(data.encode("utf-8"))
     return checksum.hexdigest()
