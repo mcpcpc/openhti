@@ -112,6 +112,6 @@ def get_checksum():
         if len(rows) == 0:
             continue  # no data
         for row in rows:
-            data = ",".(dict(row).values())
+            data = ",".join(dict(row).values())
             checksum.update(data.encode("utf-8"))
     return checksum.hexdigest()
