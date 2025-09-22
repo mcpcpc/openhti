@@ -78,9 +78,9 @@ class TestDatabase(IsolatedAsyncioTestCase):
     async def test_get_checksum(self):
         """Test that `get_checksum` returns the correct hashed SHA255 value."""
 
+        runner = self.app.test_cli_runner()
+        runner.invoke(args=["token"])
         async with self.app.app_context():
-            runner = self.app.test_cli_runner()
-            runner.invoke(init_db_command)
             result = get_checksum()
         self.assertEqual(
             result,
