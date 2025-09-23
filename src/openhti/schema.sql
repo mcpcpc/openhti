@@ -94,5 +94,5 @@ INSERT INTO setting (key, value) VALUES
     ("pattern", "(01)(?P<gtin>\d{14})(.*)(21)(?P<sn>\d{5})"),
     ("archive_url", "https://www.tofupilot.app/api/v1/runs"),
     ("archive_access_token", ""),
-    ("checksum", "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"),
+    ("checksum", "3bfc269594ef649228e9a74bab00f042efc91d5acc6fbee31a382e80d42388fe"),
     ("password", "pbkdf2:sha256:260000$gtvpYNx6qtTuY8rt$2e2a4172758fee088e20d915ac4fdef3bdb07f792e42ecb2a77aa5a72bedd5f5");
