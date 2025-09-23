@@ -83,8 +83,8 @@ def init_database(app) -> None:
 
 def get_checksum() -> str:
     """
-    Compute a logical, content-level checksum (stable across
-    VACUUM/defrag).
+    Compute a logical, content-level checksum that is stable across
+    VACUUM/defrag.
     """
 
     db = get_db()
