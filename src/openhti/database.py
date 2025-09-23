@@ -83,7 +83,7 @@ def init_database(app) -> None:
     app.cli.add_command(init_db_command)
 
 
-def get_checksum_old() -> str:
+def get_checksum() -> str:
     """
     Compute a logical, content-level checksum that is stable across
     VACUUM/defrag.
