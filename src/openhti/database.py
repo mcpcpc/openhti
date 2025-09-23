@@ -104,4 +104,5 @@ def get_checksum() -> str:
         #    data = ",".join(map(str, values))
         #    hashed.update(data.encode("utf-8"))
     checksum = hashed.hexdigest()
+    print(checksum) 
     return checksum
