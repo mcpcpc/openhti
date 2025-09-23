@@ -96,7 +96,7 @@ def get_checksum() -> str:
         rows = db.execute(f"SELECT * FROM {table}").fetchall()
         records = list(map(dict, rows))
         payload = dumps(records)
-        hashed.update(data.encode("utf-8"))
+        hashed.update(payload.encode("utf-8"))
         #if len(rows) == 0:
         #    continue  # no data
         #for row in rows:
