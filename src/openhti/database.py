@@ -7,6 +7,7 @@ Database initializer.
 
 from datetime import datetime
 from hashlib import sha256
+from json import dumps
 from pathlib import Path
 from sqlite3 import connect
 from sqlite3 import PARSE_DECLTYPES
@@ -19,7 +20,8 @@ from quart import current_app
 from quart import g
 from quart.cli import with_appcontext
 
-CHECKSUM_TABLE_NAMES = ("command", "instrument", "part", "phase", "procedure", "recipe")
+CHECKSUM_VERSION = b"v1"
+CHECKSUM_TABLES = ("command", "instrument", "part", "phase", "procedure", "recipe")
 
 
 def convert_datetime(value: bytes):
@@ -81,20 +83,28 @@ def init_database(app) -> None:
     app.cli.add_command(init_db_command)
 
 
-def get_checksum() -> str:
+def get_checksum
+
+
+def get_checksum_old() -> str:
     """
     Compute a logical, content-level checksum that is stable across
     VACUUM/defrag.
     """
 
     db = get_db()
-    checksum = sha256()
-    for table in CHECKSUM_TABLE_NAMES:
+    hashed = sha256()
+    hashed.update(CHECKSUM_VERSION)
+    for table in CHECKSUM_TABLES:
         rows = db.execute(f"SELECT * FROM {table}").fetchall()
-        if len(rows) == 0:
-            continue  # no data
-        for row in rows:
-            values = dict(row).values()
-            data = ",".join(map(str, values))
-            checksum.update(data.encode("utf-8"))
-    return checksum.hexdigest()
+        records = list(map(dict, rows))
+        payload = dumps(records)
+        hashed.update(data.encode("utf-8"))
+        #if len(rows) == 0:
+        #    continue  # no data
+        #for row in rows:
+        #    values = dict(row).values()
+        #    data = ",".join(map(str, values))
+        #    hashed.update(data.encode("utf-8"))
+    checksum = hashed.hexdigest()
+    return checksum
