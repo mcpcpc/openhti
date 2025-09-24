@@ -11,9 +11,9 @@ class TestChecksum(TestCase):
     def setUp(self):
         self.db = ":memory:"
         self.expected = "797388c088731761d77edfd27335aff46ec07bf5ff23c3dd0d4fda8b4bbb43dc"
-        schema = read_text("openhti", "schema.sql")
+        self.schema = read_text("openhti", "schema.sql")
         self.conn = connect(self.db)
-        self.conn.executescript(schema)
+        self.conn.executescript(self.schema)
 
     def tearDown(self):
         self.conn.close()
@@ -23,6 +23,7 @@ class TestChecksum(TestCase):
         self.assertEqual(result, self.expected) 
 
     def test_get_checksum_change(self):
+        print(self.schema)
         self.conn.execute(
             """
             INSERT INTO phase(name) VALUES
