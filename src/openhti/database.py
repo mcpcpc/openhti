@@ -1,5 +1,5 @@
 """
-SPDX-FileCopyrightText: 2024 Gossamer Technologies
+SPDX-FileCopyrightText: 2025 Gossamer Technologies
 SPDX-License-Identifier: BSD-3-Clause
 
 Database initializer.
