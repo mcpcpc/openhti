@@ -28,10 +28,11 @@ setting = Blueprint("setting", __name__)
 async def read() -> tuple:
     """Read settings callback."""
 
-    settings = get_db().execute("SELECT * FROM setting").fetchall()
+    db = get_rb()
+    settings = db.execute("SELECT * FROM setting").fetchall()
     func = lambda s: s["key"] == "checksum"
     checksum = list(filter(func, settings))[0]["value"]
-    dirty = checksum != get_checksum()
+    dirty = checksum != get_checksum(db)
     return await render_template("setting.html", settings=settings, dirty=dirty)
 
 
