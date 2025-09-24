@@ -4,6 +4,8 @@ from unittest import main
 from unittest import TestCase
 from unittest.mock import MagicMock
 
+from openhti.checksum import get_checksum
+
 
 class TestChecksum(TestCase):
     def setUp(self):
@@ -16,7 +18,9 @@ class TestChecksum(TestCase):
         self.conn.close()
 
     def test_get_checksum_initialize(self):
-        pass 
+        result = get_checksum(self.conn)
+        expected = "797388c088731761d77edfd27335aff46ec07bf5ff23c3dd0d4fda8b4bbb43dc"
+        self.assertEqual(result, expected) 
 
     def test_get_checksum_change(self):
         pass
