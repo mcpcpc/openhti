@@ -28,7 +28,8 @@ class TestChecksum(TestCase):
             INSERT INTO phase(name) VALUES
                 ("test value");
             """
-        ).commit()
+        )
+        self.conn.commit()
         result = get_checksum(self.conn)
         self.assertNotEqual(result, self.expected)
 
