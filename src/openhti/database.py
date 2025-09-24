@@ -6,9 +6,6 @@ Database initializer.
 """
 
 from datetime import datetime
-from hashlib import sha256
-from json import dumps
-from json import JSONEncoder
 from pathlib import Path
 from sqlite3 import connect
 from sqlite3 import PARSE_DECLTYPES
@@ -20,9 +17,6 @@ from click import echo
 from quart import current_app
 from quart import g
 from quart.cli import with_appcontext
-
-CHECKSUM_VERSION = b"v1"
-CHECKSUM_TABLES = ("command", "instrument", "part", "phase", "procedure", "recipe")
 
 
 def convert_datetime(value: bytes):
@@ -82,29 +76,3 @@ def init_database(app) -> None:
 
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
-
-
-class RecordEncoder(JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, datetime):
-            return str(obj)
-        return super().default(obj)
-
-
-def get_checksum() -> str:
-    """
-    Compute a logical, content-level checksum that is stable across
-    VACUUM/defrag.
-    """
-
-    db = get_db()
-    hashed = sha256()
-    hashed.update(CHECKSUM_VERSION)
-    for table in CHECKSUM_TABLES:
-        rows = db.execute(f"SELECT * FROM {table}").fetchall()
-        records = list(map(dict, rows))
-        payload = dumps(records, cls=RecordEncoder)
-        hashed.update(payload.encode("utf-8"))
-    checksum = hashed.hexdigest()
-    print(checksum) 
-    return checksum

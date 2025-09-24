@@ -17,7 +17,7 @@ from quart import url_for
 from werkzeug.security import generate_password_hash
 
 from .authorize import login_required
-from .database import get_checksum
+from .checksum import get_checksum
 from .database import get_db
 
 setting = Blueprint("setting", __name__)
