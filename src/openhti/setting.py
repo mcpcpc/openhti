@@ -28,7 +28,7 @@ setting = Blueprint("setting", __name__)
 async def read() -> tuple:
     """Read settings callback."""
 
-    db = get_rb()
+    db = get_db()
     settings = db.execute("SELECT * FROM setting").fetchall()
     func = lambda s: s["key"] == "checksum"
     checksum = list(filter(func, settings))[0]["value"]
