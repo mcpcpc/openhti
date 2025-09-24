@@ -10,7 +10,7 @@ from openhti.checksum import get_checksum
 class TestChecksum(TestCase):
     def setUp(self):
         self.db = ":memory:"
-        selr.expected = "797388c088731761d77edfd27335aff46ec07bf5ff23c3dd0d4fda8b4bbb43dc"
+        self.expected = "797388c088731761d77edfd27335aff46ec07bf5ff23c3dd0d4fda8b4bbb43dc"
         schema = read_text("openhti", "schema.sql")
         self.conn = connect(self.db)
         self.conn.executescript(schema)
