@@ -7,7 +7,6 @@ from unittest.mock import mock_open
 from sqlite3 import Connection
 from quart import Quart
 
-from openhti.database import get_checksum
 from openhti.database import get_db
 from openhti.database import close_db
 from openhti.database import init_db_command
