@@ -48,7 +48,7 @@ class TestChecksum(TestCase):
         )
         self.conn.commit()
         result = get_checksum(self.conn)
-        self.assertNotEqual(result, self.expected)
+        self.assertEqual(result, self.expected)
 
 
 if __name__ == "__main__":
