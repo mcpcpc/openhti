@@ -4,7 +4,6 @@ from sqlite3 import Row
 from unittest import main
 from unittest import TestCase
 from unittest.mock import MagicMock
-
 from openhti.checksum import get_checksum
 
 
