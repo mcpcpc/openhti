@@ -18,4 +18,4 @@ version = {attr = "openhti.__version__"}
 [tool.coverage.run]
 branch = true
 source = ["openhti"]
-omit = ["api/*"]
+omit = ["src/openhti/api/*"]
