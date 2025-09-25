@@ -9,7 +9,9 @@ from openhti.checksum import get_checksum
 
 class TestChecksum(TestCase):
     def setUp(self):
-        self.expected = "797388c088731761d77edfd27335aff46ec07bf5ff23c3dd0d4fda8b4bbb43dc"
+        self.expected = (
+            "797388c088731761d77edfd27335aff46ec07bf5ff23c3dd0d4fda8b4bbb43dc"
+        )
         path = files("openhti").joinpath("schema.sql")
         self.schema = path.read_text(encoding="utf-8")
         self.conn = connect(":memory:")
@@ -23,11 +25,11 @@ class TestChecksum(TestCase):
         """Test that `get_checksum` returns the appropriate hashed value after database initialization."""
 
         result = get_checksum(self.conn)
-        self.assertEqual(result, self.expected) 
+        self.assertEqual(result, self.expected)
 
     def test_get_checksum_change(self):
         """Test that `get_checksum` returns a different hashed value after new data is inserted."""
-        
+
         self.conn.execute(
             """
             INSERT INTO phase(name) VALUES
@@ -40,7 +42,7 @@ class TestChecksum(TestCase):
 
     def test_get_checksum_no_change(self):
         """Test that `get_checksum` returns the original hashed value after data is inserted and then deleted."""
-        
+
         self.conn.execute(
             """
             INSERT INTO phase(name) VALUES
@@ -48,9 +50,7 @@ class TestChecksum(TestCase):
             """
         )
         self.conn.commit()
-        self.conn.execute(
-            "DELETE FROM phase WHERE id = 1"
-        )
+        self.conn.execute("DELETE FROM phase WHERE id = 1")
         self.conn.commit()
         result = get_checksum(self.conn)
         self.assertEqual(result, self.expected)
