@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from tempfile import NamedTemporaryFile
 from unittest import IsolatedAsyncioTestCase
 from unittest import main

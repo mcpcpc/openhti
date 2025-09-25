@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """
 SPDX-FileCopyrightText: 2025 Michael Czigler
 SPDX-License-Identifier: BSD-3-Clause
@@ -29,7 +26,12 @@ from .recipe import recipe
 from .setting import setting
 from .token import init_token
 
-__version__ = "0.0.2"
+__version__ = "0.1.0"
+
+
+def init_globals(app: Quart) -> Quart:
+    app.jinja_env.globals["app_version"] = __version__
+    return app
 
 
 def create_app(test_config: dict = None) -> Quart:
@@ -52,6 +54,7 @@ def create_app(test_config: dict = None) -> Quart:
     except OSError:
         pass
 
+    init_globals(app)
     init_database(app)
     init_token(app)
     app.register_blueprint(api)
@@ -71,5 +74,4 @@ def create_app(test_config: dict = None) -> Quart:
     async def home():
         return await render_template("home.html")
 
-    app.jinja_env.globals["version"] = __version__
     return app
