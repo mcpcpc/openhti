@@ -36,7 +36,19 @@ class TestChecksum(TestCase):
         self.assertNotEqual(result, self.expected)
 
     def test_get_checksum_no_change(self):
-        pass
+        self.conn.execute(
+            """
+            INSERT INTO phase(name) VALUES
+                ("test value");
+            """
+        )
+        self.conn.commit()
+        self.conn.execute(
+            "DELETE FROM phase WHERE id = 1"
+        )
+        self.conn.commit()
+        result = get_checksum(self.conn)
+        self.assertNotEqual(result, self.expected)
 
 
 if __name__ == "__main__":
