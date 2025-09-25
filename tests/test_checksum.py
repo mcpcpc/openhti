@@ -1,5 +1,6 @@
 from importlib.resources import read_text
 from sqlite3 import connect
+from sqlite3 import Row
 from unittest import main
 from unittest import TestCase
 from unittest.mock import MagicMock
@@ -13,6 +14,7 @@ class TestChecksum(TestCase):
         self.expected = "797388c088731761d77edfd27335aff46ec07bf5ff23c3dd0d4fda8b4bbb43dc"
         self.schema = read_text("openhti", "schema.sql")
         self.conn = connect(self.db)
+        self.conn.row_factory = Row
         self.conn.executescript(self.schema)
 
     def tearDown(self):
