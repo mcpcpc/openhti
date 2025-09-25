@@ -23,7 +23,6 @@ class TestChecksum(TestCase):
         self.assertEqual(result, self.expected) 
 
     def test_get_checksum_change(self):
-        print(self.schema)
         self.conn.execute(
             """
             INSERT INTO phase(name) VALUES
