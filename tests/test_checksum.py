@@ -20,10 +20,14 @@ class TestChecksum(TestCase):
         self.conn.close()
 
     def test_get_checksum_initialize(self):
+        """Test that `get_checksum` returns the appropriate hashed value after database initialization."""
+
         result = get_checksum(self.conn)
         self.assertEqual(result, self.expected) 
 
     def test_get_checksum_change(self):
+        """Test that `get_checksum` returns a different hashed value after new data is inserted."""
+        
         self.conn.execute(
             """
             INSERT INTO phase(name) VALUES
@@ -35,6 +39,8 @@ class TestChecksum(TestCase):
         self.assertNotEqual(result, self.expected)
 
     def test_get_checksum_no_change(self):
+        """Test that `get_checksum` returns the original hashed value after data is inserted and then deleted."""
+        
         self.conn.execute(
             """
             INSERT INTO phase(name) VALUES
