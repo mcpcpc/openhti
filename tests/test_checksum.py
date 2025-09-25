@@ -11,7 +11,6 @@ class TestChecksum(TestCase):
     def setUp(self):
         self.db = ":memory:"
         self.expected = "797388c088731761d77edfd27335aff46ec07bf5ff23c3dd0d4fda8b4bbb43dc"
-        #self.schema = read_text("openhti", "schema.sql")
         path = files("openhti").joinpath("schema.sql")
         self.schema = path.read_text(encoding="utf-8")
         self.conn = connect(self.db)
