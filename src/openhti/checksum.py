@@ -31,6 +31,7 @@ def get_checksum(db) -> str:
     hashed.update(CHECKSUM_VERSION)
     for table in CHECKSUM_TABLES:
         rows = db.execute(f"SELECT * FROM {table}").fetchall()
+        print(rows)
         records = list(map(dict, rows))
         payload = dumps(records, cls=RecordEncoder)
         hashed.update(payload.encode("utf-8"))
