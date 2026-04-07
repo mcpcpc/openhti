@@ -75,26 +75,14 @@ def lookup(global_trade_item_number: str) -> dict | None:
 
 
 def archive(procedure: Procedure) -> None:
-    url = (
-        get_db()
-        .execute(
-            """
+    url = get_db().execute("""
         SELECT value FROM setting WHERE key = 'archive_url'
-        """
-        )
-        .fetchone()["value"]
-    )
+        """).fetchone()["value"]
     if not isinstance(url, str) or url == "":
         return  # not a valid archive URL
-    token = (
-        get_db()
-        .execute(
-            """
+    token = get_db().execute("""
         SELECT value FROM setting WHERE key = 'archive_access_token'
-        """
-        )
-        .fetchone()["value"]
-    )
+        """).fetchone()["value"]
     if not isinstance(token, str) or token == "":
         return  # not a valid archive token
     try:
@@ -107,15 +95,9 @@ def archive(procedure: Procedure) -> None:
 def get_serial_label(value: str) -> Match:
     """Get serial label information."""
 
-    pattern = (
-        get_db()
-        .execute(
-            """
+    pattern = get_db().execute("""
         SELECT value FROM setting WHERE key = 'pattern'
-        """
-        )
-        .fetchone()["value"]
-    )
+        """).fetchone()["value"]
     return search(pattern, value)
 
 

@@ -23,15 +23,9 @@ measurement = Blueprint("measurement", __name__)
 async def read() -> tuple:
     """Read measurements callback."""
 
-    measurements = (
-        get_db()
-        .execute(
-            """
+    measurements = get_db().execute("""
         SELECT * FROM measurement
-        """
-        )
-        .fetchall()
-    )
+        """).fetchall()
     return await render_template(
         "measurement.html",
         measurements=measurements,

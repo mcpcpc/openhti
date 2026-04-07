@@ -24,60 +24,24 @@ async def read() -> tuple:
     """Read recipes callback."""
 
     number = request.args.get("number")
-    commands = (
-        get_db()
-        .execute(
-            """
+    commands = get_db().execute("""
         SELECT * FROM command
-        """
-        )
-        .fetchall()
-    )
-    instruments = (
-        get_db()
-        .execute(
-            """
+        """).fetchall()
+    instruments = get_db().execute("""
         SELECT * FROM instrument
-        """
-        )
-        .fetchall()
-    )
-    measurements = (
-        get_db()
-        .execute(
-            """
+        """).fetchall()
+    measurements = get_db().execute("""
         SELECT * FROM measurement
-        """
-        )
-        .fetchall()
-    )
-    parts = (
-        get_db()
-        .execute(
-            """
+        """).fetchall()
+    parts = get_db().execute("""
         SELECT * FROM part
-        """
-        )
-        .fetchall()
-    )
-    phases = (
-        get_db()
-        .execute(
-            """
+        """).fetchall()
+    phases = get_db().execute("""
         SELECT * FROM phase
-        """
-        )
-        .fetchall()
-    )
-    procedures = (
-        get_db()
-        .execute(
-            """
+        """).fetchall()
+    procedures = get_db().execute("""
         SELECT * FROM procedure
-        """
-        )
-        .fetchall()
-    )
+        """).fetchall()
     query = """
         SELECT
             recipe.id AS id,
