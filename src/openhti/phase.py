@@ -23,15 +23,9 @@ phase = Blueprint("phase", __name__)
 async def read() -> tuple:
     """Read phases callback."""
 
-    phases = (
-        get_db()
-        .execute(
-            """
+    phases = get_db().execute("""
         SELECT * FROM phase
-        """
-        )
-        .fetchall()
-    )
+        """).fetchall()
     return await render_template(
         "phase.html",
         phases=phases,

@@ -30,12 +30,10 @@ class TestChecksum(TestCase):
     def test_get_checksum_change(self):
         """Test that `get_checksum` returns a different hashed value after new data is inserted."""
 
-        self.conn.execute(
-            """
+        self.conn.execute("""
             INSERT INTO phase(name) VALUES
                 ("test value");
-            """
-        )
+            """)
         self.conn.commit()
         result = get_checksum(self.conn)
         self.assertNotEqual(result, self.expected)
@@ -43,12 +41,10 @@ class TestChecksum(TestCase):
     def test_get_checksum_no_change(self):
         """Test that `get_checksum` returns the original hashed value after data is inserted and then deleted."""
 
-        self.conn.execute(
-            """
+        self.conn.execute("""
             INSERT INTO phase(name) VALUES
                 ("test value");
-            """
-        )
+            """)
         self.conn.commit()
         self.conn.execute("DELETE FROM phase WHERE id = 1")
         self.conn.commit()

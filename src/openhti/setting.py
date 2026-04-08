@@ -94,7 +94,7 @@ async def clean() -> tuple:
             value = ?
         WHERE key = 'checksum'
         """,
-        (get_checksum(),),
+        (get_checksum(db),),
     )
     db.commit()
     return redirect(url_for("setting.read"))
