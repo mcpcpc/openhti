@@ -75,6 +75,16 @@
                 <option value="10000">10 s</option>
               </select>
             </div>
+            <div class="form-group">
+              <label class="form-label" for="max_points">Chart Display Points</label>
+              <select class="form-select" id="max_points">
+                <option value="100">100</option>
+                <option value="250">250</option>
+                <option value="500" selected>500</option>
+                <option value="1000">1000</option>
+                <option value="2000">2000</option>
+              </select>
+            </div>
           </div>
           <div class="card-divider"></div>
           <!-- Statistics Section -->
@@ -125,7 +135,7 @@
   <script>
     'use strict';
 
-    const MAX_POINTS = 500;
+    let MAX_POINTS = 500;
     let points        = [];
     let lowerLimit    = null;
     let upperLimit    = null;
@@ -322,13 +332,14 @@
     }
 
     /* ── WebSocket ───────────────────────────────────────── */
-    const formIds = ['command_id', 'instrument_id', 'measurement_id', 'interval_ms'];
+    const formIds = ['command_id', 'instrument_id', 'measurement_id', 'interval_ms', 'max_points'];
 
     function setFormDisabled(disabled) {
       formIds.forEach(id => { document.getElementById(id).disabled = disabled; });
     }
 
     document.getElementById('start-btn').addEventListener('click', () => {
+      MAX_POINTS = parseInt(document.getElementById('max_points').value, 10);
       const config = {
         command_id:     document.getElementById('command_id').value,
         instrument_id:  document.getElementById('instrument_id').value,
