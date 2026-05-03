@@ -27,7 +27,7 @@ from .recipe import recipe
 from .setting import setting
 from .token import init_token
 
-__version__ = "0.1.1"
+__version__ = "1.0.0"
 
 
 def init_globals(app: Quart) -> Quart:
