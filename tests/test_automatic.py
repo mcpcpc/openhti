@@ -209,8 +209,9 @@ class AutomaticArchiveTests(AutomaticTestBase):
         archive(procedure)
         mock_archive_client_class.assert_not_called()
 
+    @patch("builtins.print")
     @patch("openhti.automatic.ArchiveClient")
-    def test_archive_exception_handling(self, mock_archive_client_class):
+    def test_archive_exception_handling(self, mock_archive_client_class, mock_print):
         """Test archiving handles exceptions gracefully."""
 
         from openhti.automatic import archive
@@ -243,6 +244,8 @@ class AutomaticArchiveTests(AutomaticTestBase):
             archive(procedure)
         except Exception as e:
             self.fail(f"archive() raised {e}")
+        mock_print.assert_called_once()
+        self.assertEqual(str(mock_print.call_args.args[0]), "Network error")
 
 
 class AutomaticRecipeSelectQueryTests(AutomaticTestBase):
