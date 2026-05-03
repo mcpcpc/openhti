@@ -23,6 +23,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Edge cases and error scenarios systematically covered including boundary values, database integrity errors, and network failure handling.
 - Token-based API authentication fully tested with expiration, signature, and claim validation.
 
+### Fixed
+
+- API v1 delete endpoints now commit on the database connection (not the cursor), preventing runtime errors during delete operations.
+- API v1 delete endpoints now return explicit HTTP 204 responses instead of returning no response.
+- Async unittest setup/teardown issues were resolved across API and automatic module tests by using async app-context management and direct schema initialization in test setup.
+- Token integration tests were stabilized for unittest by generating JWTs directly in async tests instead of invoking Quart CLI commands inside the event loop.
+- Token expiration tests for zero/negative expiration values were corrected to inspect payload claims without failing on expected expiration validation.
+
 ## [0.1.1] - 2026-04-07
 
 ### Fixed
