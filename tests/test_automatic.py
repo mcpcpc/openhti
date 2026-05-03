@@ -7,10 +7,10 @@ Automatic module tests (recipe execution and archiving).
 
 from unittest import IsolatedAsyncioTestCase
 from unittest import main
-from unittest import TestCase
 from unittest.mock import MagicMock
 from unittest.mock import patch
 from tempfile import NamedTemporaryFile
+from pathlib import Path
 
 from openhti import create_app
 from openhti.automatic import lookup
@@ -18,23 +18,25 @@ from openhti.automatic import get_serial_label
 from openhti.database import get_db
 
 
-class AutomaticLookupTests(TestCase):
-    """Test lookup function for finding parts by global_trade_item_number."""
+class AutomaticTestBase(IsolatedAsyncioTestCase):
+    """Shared async-safe setup/teardown for automatic module tests."""
 
-    def setUp(self):
-        """Set up test app and database."""
-
+    async def asyncSetUp(self):
         self.db = NamedTemporaryFile()
         self.app = create_app({"TESTING": True, "DATABASE": self.db.name})
-        self.app.test_cli_runner().invoke(args=["init-db"])
         self.ctx = self.app.app_context()
-        self.ctx.push()
+        await self.ctx.push()
+        schema = Path(self.app.root_path) / "schema.sql"
+        get_db().executescript(schema.read_text(encoding="utf-8"))
+        self.client = self.app.test_client()
 
-    def tearDown(self):
-        """Clean up."""
-
-        self.ctx.pop()
+    async def asyncTearDown(self):
+        await self.ctx.pop()
         self.db.close()
+
+
+class AutomaticLookupTests(AutomaticTestBase):
+    """Test lookup function for finding parts by global_trade_item_number."""
 
     def test_lookup_existing_part(self):
         """Test lookup finds existing part."""
@@ -73,23 +75,8 @@ class AutomaticLookupTests(TestCase):
         self.assertIn("name", result)
 
 
-class AutomaticSerialLabelTests(TestCase):
+class AutomaticSerialLabelTests(AutomaticTestBase):
     """Test serial label extraction with regex patterns."""
-
-    def setUp(self):
-        """Set up test app and database with pattern setting."""
-
-        self.db = NamedTemporaryFile()
-        self.app = create_app({"TESTING": True, "DATABASE": self.db.name})
-        self.app.test_cli_runner().invoke(args=["init-db"])
-        self.ctx = self.app.app_context()
-        self.ctx.push()
-
-    def tearDown(self):
-        """Clean up."""
-
-        self.ctx.pop()
-        self.db.close()
 
     def test_get_serial_label_matches_pattern(self):
         """Test extracting serial label with matching pattern."""
@@ -133,23 +120,8 @@ class AutomaticSerialLabelTests(TestCase):
         self.assertEqual(result.group(0), "SN123")
 
 
-class AutomaticArchiveTests(TestCase):
+class AutomaticArchiveTests(AutomaticTestBase):
     """Test archive posting functionality."""
-
-    def setUp(self):
-        """Set up test app and database."""
-
-        self.db = NamedTemporaryFile()
-        self.app = create_app({"TESTING": True, "DATABASE": self.db.name})
-        self.app.test_cli_runner().invoke(args=["init-db"])
-        self.ctx = self.app.app_context()
-        self.ctx.push()
-
-    def tearDown(self):
-        """Clean up."""
-
-        self.ctx.pop()
-        self.db.close()
 
     @patch("openhti.automatic.ArchiveClient")
     def test_archive_with_valid_settings(self, mock_archive_client_class):
@@ -273,23 +245,8 @@ class AutomaticArchiveTests(TestCase):
             self.fail(f"archive() raised {e}")
 
 
-class AutomaticRecipeSelectQueryTests(TestCase):
+class AutomaticRecipeSelectQueryTests(AutomaticTestBase):
     """Test recipe SQL query construction."""
-
-    def setUp(self):
-        """Set up test app and database."""
-
-        self.db = NamedTemporaryFile()
-        self.app = create_app({"TESTING": True, "DATABASE": self.db.name})
-        self.app.test_cli_runner().invoke(args=["init-db"])
-        self.ctx = self.app.app_context()
-        self.ctx.push()
-
-    def tearDown(self):
-        """Clean up."""
-
-        self.ctx.pop()
-        self.db.close()
 
     def test_recipe_query_joins_all_tables(self):
         """Test recipe query properly joins all required tables."""
@@ -313,21 +270,8 @@ class AutomaticRecipeSelectQueryTests(TestCase):
         self.assertIn("procedure.id = ?", recipe_select_query)
 
 
-class AutomaticWebsocketTests(IsolatedAsyncioTestCase):
+class AutomaticWebsocketTests(AutomaticTestBase):
     """Test automatic websocket endpoint."""
-
-    def setUp(self):
-        """Set up test app and database."""
-
-        self.db = NamedTemporaryFile()
-        self.app = create_app({"TESTING": True, "DATABASE": self.db.name})
-        self.app.test_cli_runner().invoke(args=["init-db"])
-        self.client = self.app.test_client()
-
-    def tearDown(self):
-        """Clean up."""
-
-        self.db.close()
 
     async def test_automatic_endpoint_exists(self):
         """Test that automatic endpoint exists."""

@@ -8,6 +8,7 @@ API v1 endpoint tests.
 from datetime import datetime
 from datetime import timedelta
 from datetime import timezone
+from pathlib import Path
 from tempfile import NamedTemporaryFile
 from unittest import IsolatedAsyncioTestCase
 from unittest import main
@@ -20,17 +21,23 @@ from openhti import create_app
 class APITestBase(IsolatedAsyncioTestCase):
     """Base test class for API endpoints."""
 
-    def setUp(self):
+    async def asyncSetUp(self):
         """Set up test app and database."""
 
         self.db = NamedTemporaryFile()
         self.app = create_app({"TESTING": True, "DATABASE": self.db.name})
-        self.app.test_cli_runner().invoke(args=["init-db"])
+        self.ctx = self.app.app_context()
+        await self.ctx.push()
+        from openhti.database import get_db
+
+        schema = Path(self.app.root_path) / "schema.sql"
+        get_db().executescript(schema.read_text(encoding="utf-8"))
         self.client = self.app.test_client()
 
-    def tearDown(self):
+    async def asyncTearDown(self):
         """Clean up database."""
 
+        await self.ctx.pop()
         self.db.close()
 
     def _get_valid_token(self, expires_in=300):
@@ -345,8 +352,8 @@ class APIDeleteTests(APITestBase):
             "/api/v1/command/999",
             headers={"Authorization": f"Bearer {token}"},
         )
-        # Should return error (404 or 201)
-        self.assertIn(response.status_code, [200, 201, 404])
+        # Idempotent delete can still return 204 when resource does not exist.
+        self.assertIn(response.status_code, [200, 201, 204, 404])
 
 
 class APIAuthenticationTests(APITestBase):

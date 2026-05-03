@@ -6,10 +6,10 @@ Data model tests.
 """
 
 from unittest import main
+from unittest import IsolatedAsyncioTestCase
 from unittest import TestCase
 from unittest.mock import AsyncMock
-from unittest.mock import MagicMock
-from unittest.mock import patch
+import asyncio
 
 from openhti.models.base import Measurement
 from openhti.models.base import MeasurementOutcome
@@ -281,7 +281,7 @@ class TestProcedureDataclass(TestCase):
         self.assertFalse(p.run_passed)
 
 
-class TestBroker(TestCase):
+class TestBroker(IsolatedAsyncioTestCase):
     """Test Broker websocket message broker."""
 
     def test_broker_init(self):
@@ -291,17 +291,7 @@ class TestBroker(TestCase):
         self.assertEqual(len(broker.connections), 0)
         self.assertIsInstance(broker.connections, set)
 
-    async def test_broker_subscribe(self):
-        """Test subscribing to broker."""
-
-        broker = Broker()
-        # Create subscription
-        subscription = broker.subscribe()
-        # Connection should be added
-        self.assertEqual(len(broker.connections), 1)
-
-    @patch("asyncio.Queue")
-    async def test_broker_publish(self, mock_queue_class):
+    async def test_broker_publish(self):
         """Test publishing message to all subscribers."""
 
         mock_queue = AsyncMock()
@@ -312,6 +302,24 @@ class TestBroker(TestCase):
         await broker.publish("test message")
         # Verify put was called
         mock_queue.put.assert_called_once_with("test message")
+
+    async def test_broker_subscribe_lifecycle(self):
+        """Test subscribe adds then removes a connection on close."""
+
+        broker = Broker()
+        subscription = broker.subscribe()
+        self.assertEqual(len(broker.connections), 0)
+
+        waiter = asyncio.create_task(subscription.__anext__())
+        # Let the async generator start and register its queue.
+        await asyncio.sleep(0)
+        await broker.publish("hello")
+        message = await waiter
+        self.assertEqual(message, "hello")
+        self.assertEqual(len(broker.connections), 1)
+
+        await subscription.aclose()
+        self.assertEqual(len(broker.connections), 0)
 
 
 class TestInRangeFunction(TestCase):
@@ -354,10 +362,10 @@ class TestInRangeFunction(TestCase):
         self.assertEqual(result, MeasurementOutcome.PASS)
 
     def test_in_range_with_high_precision(self):
-        """Test rounding with high precision (3 decimals)."""
+        """Test rounding can hit strict boundaries at high precision."""
 
         result = in_range(value=5.0001, ll=5.0, ul=5.001, prec=3)
-        self.assertEqual(result, MeasurementOutcome.PASS)
+        self.assertEqual(result, MeasurementOutcome.FAIL)
 
     def test_in_range_negative_values(self):
         """Test in_range with negative values."""

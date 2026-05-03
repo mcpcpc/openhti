@@ -148,49 +148,70 @@ async def read_recipe(id: int) -> tuple:
 @token_required
 async def delete_command(id: int) -> tuple:
     query = "DELETE FROM command WHERE id = ?"
-    get_db().execute(query, (id,)).commit()
+    db = get_db()
+    db.execute(query, (id,))
+    db.commit()
+    return "", 204
 
 
 @api.delete("/instrument/<int:id>")
 @token_required
 async def delete_instrument(id: int) -> tuple:
     query = "DELETE FROM instrument WHERE id = ?"
-    get_db().execute(query, (id,)).commit()
+    db = get_db()
+    db.execute(query, (id,))
+    db.commit()
+    return "", 204
 
 
 @api.delete("/measurement/<int:id>")
 @token_required
 async def delete_measurement(id: int) -> tuple:
     query = "DELETE FROM measurement WHERE id = ?"
-    get_db().execute(query, (id,)).commit()
+    db = get_db()
+    db.execute(query, (id,))
+    db.commit()
+    return "", 204
 
 
 @api.delete("/part/<int:id>")
 @token_required
 async def delete_part(id: int) -> tuple:
     query = "DELETE FROM part WHERE id = ?"
-    get_db().execute(query, (id,)).commit()
+    db = get_db()
+    db.execute(query, (id,))
+    db.commit()
+    return "", 204
 
 
 @api.delete("/phase/<int:id>")
 @token_required
 async def delete_phase(id: int) -> tuple:
     query = "DELETE FROM phase WHERE id = ?"
-    get_db().execute(query, (id,)).commit()
+    db = get_db()
+    db.execute(query, (id,))
+    db.commit()
+    return "", 204
 
 
 @api.delete("/procedure/<int:id>")
 @token_required
 async def delete_procedure(id: int) -> tuple:
     query = "DELETE FROM procedure WHERE id = ?"
-    get_db().execute(query, (id,)).commit()
+    db = get_db()
+    db.execute(query, (id,))
+    db.commit()
+    return "", 204
 
 
 @api.delete("/recipe/<int:id>")
 @token_required
 async def delete_recipe(id: int) -> tuple:
     query = "DELETE FROM recipe WHERE id = ?"
-    get_db().execute(query, (id,)).commit()
+    db = get_db()
+    db.execute(query, (id,))
+    db.commit()
+    return "", 204
 
 
 @api.post("/command")
