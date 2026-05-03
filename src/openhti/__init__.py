@@ -7,6 +7,7 @@ Lightweight hardware test framework application.
 
 from os import makedirs
 from os.path import join
+from os.path import getmtime
 
 from quart import Quart
 from quart import render_template
@@ -31,6 +32,15 @@ __version__ = "0.1.1"
 
 def init_globals(app: Quart) -> Quart:
     app.jinja_env.globals["app_version"] = __version__
+
+    def static_mtime(filename: str) -> int:
+        path = join(app.static_folder, filename)
+        try:
+            return int(getmtime(path))
+        except OSError:
+            return 0
+
+    app.jinja_env.globals["static_mtime"] = static_mtime
     return app
 
 
