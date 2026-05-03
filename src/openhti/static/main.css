@@ -586,6 +586,14 @@ body.modal-open { overflow: hidden }
 }
 .theme-btn:hover { background: var(--color-border-strong) }
 .theme-btn svg { width: 14px; height: 14px; flex-shrink: 0 }
+
+/* Theme icon — show only the icon matching the stored preference */
+.theme-icon-light,
+.theme-icon-dark,
+.theme-icon-auto { display: none }
+[data-stored-theme="light"] .theme-icon-light { display: block }
+[data-stored-theme="dark"]  .theme-icon-dark  { display: block }
+[data-stored-theme="auto"]  .theme-icon-auto  { display: block }
 .auth-btn {
   display: flex; align-items: center; gap: var(--s2);
   padding: var(--s2) var(--s3); border-radius: var(--r-md);
