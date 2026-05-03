@@ -595,6 +595,15 @@ body.modal-open { overflow: hidden }
 .auth-btn:hover { background: var(--color-border-strong); color: var(--color-text) }
 .auth-btn svg { width: 14px; height: 14px; flex-shrink: 0 }
 
+/* --- Monitor chart ----------------------------------------- */
+.monitor-chart-card {
+  display: flex; flex-direction: column; min-height: 420px;
+}
+.monitor-chart-body {
+  flex: 1; padding: var(--s4); display: flex; align-items: stretch;
+}
+#monitor-canvas { display: block; touch-action: none }
+
 /* --- Settings layout --------------------------------------- */
 .settings-grid {
   display: grid; grid-template-columns: 1fr; gap: var(--s4);

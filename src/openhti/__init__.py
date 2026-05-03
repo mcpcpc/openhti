@@ -10,7 +10,8 @@ from os.path import join
 from os.path import getmtime
 
 from quart import Quart
-from quart import render_template
+from quart import redirect
+from quart import url_for
 
 from .api.v1 import api
 from .authorize import authorize
@@ -20,6 +21,7 @@ from .command import command
 from .instrument import instrument
 from .manual import manual
 from .measurement import measurement
+from .monitor import monitor
 from .part import part
 from .phase import phase
 from .procedure import procedure
@@ -74,6 +76,7 @@ def create_app(test_config: dict = None) -> Quart:
     app.register_blueprint(instrument)
     app.register_blueprint(manual)
     app.register_blueprint(measurement)
+    app.register_blueprint(monitor)
     app.register_blueprint(part)
     app.register_blueprint(phase)
     app.register_blueprint(procedure)
@@ -82,6 +85,6 @@ def create_app(test_config: dict = None) -> Quart:
 
     @app.get("/")
     async def home():
-        return await render_template("home.html")
+        return redirect(url_for("automatic.read"))
 
     return app

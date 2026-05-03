@@ -26,7 +26,7 @@
       <!-- ── Sidebar ── -->
       <nav class="sidebar" id="sidebar" aria-label="Main navigation">
         <div class="sidebar-brand">
-          <a href="{{ url_for('home') }}" class="brand-icon" aria-label="OpenHTI home">
+          <a href="{{ url_for('automatic.read') }}" class="brand-icon" aria-label="OpenHTI home">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <use href="{{ url_for('static', filename='keen-icons.svg') }}#abstract-48"></use>
             </svg>
@@ -36,11 +36,6 @@
 
         <div class="sidebar-nav">
           <span class="sidebar-label">Mode</span>
-          <a class="sidebar-link{% if request.url_rule.endpoint == 'home' %} active{% endif %}"
-             href="{{ url_for('home') }}">
-            <svg viewBox="0 0 24 24" width="15" height="15"><path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-            Select
-          </a>
           <a class="sidebar-link{% if request.url_rule.endpoint == 'automatic.read' %} active{% endif %}"
              href="{{ url_for('automatic.read') }}">
             <svg viewBox="0 0 24 24" width="15" height="15"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
@@ -50,6 +45,11 @@
              href="{{ url_for('manual.read') }}">
             <svg viewBox="0 0 24 24" width="15" height="15"><path fill="currentColor" d="M13 2.05v2.02c3.95.49 7 3.85 7 7.93 0 3.21-1.81 6-4.72 7.72L13 17v5h5l-1.22-1.22C19.91 19.07 22 15.76 22 12c0-5.18-3.95-9.45-9-9.95zM11 2.05C5.95 2.55 2 6.82 2 12c0 3.76 2.09 7.07 5.22 8.78L6 22h5V2.05z"/></svg>
             Manual
+          </a>
+          <a class="sidebar-link{% if request.url_rule.endpoint == 'monitor.read' %} active{% endif %}"
+             href="{{ url_for('monitor.read') }}">
+            <svg viewBox="0 0 24 24" width="15" height="15"><path fill="currentColor" d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>
+            Monitor
           </a>
 
           {% if session["unlocked"] %}
@@ -129,11 +129,6 @@
 
       <!-- ── Bottom nav (mobile only) ── -->
       <nav class="bottom-nav" aria-label="Mobile navigation">
-        <a href="{{ url_for('home') }}"
-           class="bottom-nav-item{% if request.url_rule.endpoint == 'home' %} active{% endif %}">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-          Home
-        </a>
         <a href="{{ url_for('automatic.read') }}"
            class="bottom-nav-item{% if request.url_rule.endpoint == 'automatic.read' %} active{% endif %}">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
@@ -143,6 +138,11 @@
            class="bottom-nav-item{% if request.url_rule.endpoint == 'manual.read' %} active{% endif %}">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2.05v2.02c3.95.49 7 3.85 7 7.93 0 3.21-1.81 6-4.72 7.72L13 17v5h5l-1.22-1.22C19.91 19.07 22 15.76 22 12c0-5.18-3.95-9.45-9-9.95zM11 2.05C5.95 2.55 2 6.82 2 12c0 3.76 2.09 7.07 5.22 8.78L6 22h5V2.05z"/></svg>
           Manual
+        </a>
+        <a href="{{ url_for('monitor.read') }}"
+           class="bottom-nav-item{% if request.url_rule.endpoint == 'monitor.read' %} active{% endif %}">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>
+          Monitor
         </a>
         <button id="menu-toggle" class="bottom-nav-item" aria-label="Open menu">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>

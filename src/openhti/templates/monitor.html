@@ -1,0 +1,433 @@
+{% extends 'base.htm' %}
+{% block title %}Monitor{% endblock %}
+{% block container %}
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1 class="page-title">Monitor</h1>
+    </div>
+    <div class="page-header-actions">
+      <button class="btn btn-secondary" id="clear-btn" type="button">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+        Clear
+      </button>
+      <button class="btn btn-primary" id="start-btn" type="button">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+        Start
+      </button>
+      <button class="btn btn-danger" id="stop-btn" type="button" hidden>
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h12v12H6z"/></svg>
+        Stop
+      </button>
+    </div>
+  </div>
+
+  <div class="test-layout">
+
+    <!-- ── Left panel ── -->
+    <div class="test-panel">
+      <div class="card">
+        <div class="card-body">
+          <div class="form-group">
+            <label class="form-label" for="command_id">Command</label>
+            <select class="form-select" id="command_id">
+              {% if commands %}
+                {% for command in commands %}
+                <option value="{{ command.id }}">{{ command.name }}</option>
+                {% endfor %}
+              {% else %}
+                <option value="" disabled>No commands configured</option>
+              {% endif %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="instrument_id">Instrument</label>
+            <select class="form-select" id="instrument_id">
+              {% if instruments %}
+                {% for instrument in instruments %}
+                <option value="{{ instrument.id }}">{{ instrument.name }}</option>
+                {% endfor %}
+              {% else %}
+                <option value="" disabled>No instruments configured</option>
+              {% endif %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="measurement_id">
+              Measurement
+              <span style="color:var(--color-text-3);font-weight:400">(limits)</span>
+            </label>
+            <select class="form-select" id="measurement_id">
+              <option value="">None</option>
+              {% for measurement in measurements %}
+              <option value="{{ measurement.id }}">{{ measurement.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="interval_ms">Sampling Rate</label>
+            <select class="form-select" id="interval_ms">
+              <option value="10">10 ms</option>
+              <option value="100">100 ms</option>
+              <option value="500" selected>500 ms</option>
+              <option value="1000">1 s</option>
+              <option value="10000">10 s</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <div class="data-row">
+            <span class="data-label">Status</span>
+            <span id="monitor-state" class="badge badge-neutral">Idle</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Latest</span>
+            <span class="data-value" id="stat-latest">—</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Min</span>
+            <span class="data-value" id="stat-min">—</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Max</span>
+            <span class="data-value" id="stat-max">—</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Mean</span>
+            <span class="data-value" id="stat-mean">—</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Samples</span>
+            <span class="data-value" id="stat-count">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Chart card ── -->
+    <div class="card monitor-chart-card">
+      <div class="card-header">
+        <span class="card-title" id="chart-title">Real-Time Trend</span>
+        <span class="badge badge-neutral" id="range-badge" hidden></span>
+      </div>
+      <div class="monitor-chart-body" id="chart-wrap">
+        <canvas id="monitor-canvas"></canvas>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    'use strict';
+
+    const MAX_POINTS = 500;
+    let points        = [];
+    let lowerLimit    = null;
+    let upperLimit    = null;
+    let units         = '';
+    let measureName   = '';
+    let stats         = { min: Infinity, max: -Infinity, sum: 0, count: 0 };
+    let wsConn        = null;
+    let drawPending   = false;
+
+    const canvas    = document.getElementById('monitor-canvas');
+    const ctx       = canvas.getContext('2d');
+    const wrap      = document.getElementById('chart-wrap');
+    const stateEl   = document.getElementById('monitor-state');
+    const rangeBadge= document.getElementById('range-badge');
+    const titleEl   = document.getElementById('chart-title');
+
+    /* ── CSS token helper ─────────────────────────────────── */
+    function css(prop) {
+      return getComputedStyle(document.documentElement).getPropertyValue(prop).trim();
+    }
+
+    /* ── Number formatter ────────────────────────────────── */
+    function fmtVal(v, u) {
+      if (v === null || v === undefined || !isFinite(v)) return '—';
+      const abs = Math.abs(v);
+      let s;
+      if (abs === 0)        s = '0';
+      else if (abs >= 1e6 || abs < 1e-3) s = v.toExponential(3);
+      else if (abs >= 100)  s = v.toFixed(2);
+      else if (abs >= 10)   s = v.toFixed(3);
+      else                  s = v.toFixed(4);
+      return u ? s + '\u202f' + u : s;
+    }
+
+    /* ── Canvas sizing ───────────────────────────────────── */
+    function resizeCanvas() {
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      const cssW = wrap.clientWidth;
+      const cssH = Math.max(340, Math.round(cssW * 0.54));
+      canvas.width  = Math.round(cssW * dpr);
+      canvas.height = Math.round(cssH * dpr);
+      canvas.style.width  = cssW + 'px';
+      canvas.style.height = cssH + 'px';
+      scheduleRedraw();
+    }
+
+    /* ── Chart renderer ──────────────────────────────────── */
+    function scheduleRedraw() {
+      if (drawPending) return;
+      drawPending = true;
+      requestAnimationFrame(() => { drawChart(); drawPending = false; });
+    }
+
+    function drawChart() {
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      const W   = canvas.width  / dpr;
+      const H   = canvas.height / dpr;
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, W, H);
+
+      const PAD = { top: 28, right: 20, bottom: 52, left: 68 };
+      const cW  = W - PAD.left - PAD.right;
+      const cH  = H - PAD.top  - PAD.bottom;
+
+      const cText3   = css('--color-text-3');
+      const cText2   = css('--color-text-2');
+      const cBorder  = css('--color-border');
+      const cPrimary = css('--color-primary');
+      const cSuccess = css('--color-success');
+      const cDanger  = css('--color-danger');
+
+      /* Empty state */
+      if (points.length === 0) {
+        ctx.fillStyle    = cText3;
+        ctx.font         = '13px Inter, system-ui, sans-serif';
+        ctx.textAlign    = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('Press Start to begin monitoring', W / 2, H / 2);
+        return;
+      }
+
+      /* Y range — include limit lines */
+      const vals = points.map(p => p.value);
+      let yMin = Math.min(...vals);
+      let yMax = Math.max(...vals);
+      if (lowerLimit !== null) yMin = Math.min(yMin, lowerLimit);
+      if (upperLimit !== null) yMax = Math.max(yMax, upperLimit);
+      const yPad  = (yMax - yMin) * 0.12 || 0.5;
+      yMin -= yPad; yMax += yPad;
+      const yRange = yMax - yMin || 1;
+
+      /* X range — elapsed ms from first point */
+      const t0     = points[0].timestamp;
+      const tLast  = points[points.length - 1].timestamp;
+      const tRange = Math.max(tLast - t0, 1);
+
+      const toX = t => PAD.left + ((t - t0) / tRange) * cW;
+      const toY = v => PAD.top  + cH - ((v - yMin) / yRange) * cH;
+
+      /* Y grid & labels */
+      const yTicks = 5;
+      ctx.lineWidth   = 1;
+      ctx.strokeStyle = cBorder;
+      ctx.setLineDash([]);
+      for (let i = 0; i <= yTicks; i++) {
+        const v = yMin + (i / yTicks) * yRange;
+        const y = toY(v);
+        ctx.beginPath(); ctx.moveTo(PAD.left, y); ctx.lineTo(PAD.left + cW, y); ctx.stroke();
+        ctx.fillStyle    = cText3;
+        ctx.font         = '10px Inter, system-ui, sans-serif';
+        ctx.textAlign    = 'right';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(fmtVal(v, ''), PAD.left - 8, y);
+      }
+
+      /* X grid & labels */
+      const xTicks = Math.min(8, Math.floor(cW / 80));
+      for (let i = 0; i <= xTicks; i++) {
+        const t = t0 + (i / xTicks) * tRange;
+        const x = toX(t);
+        ctx.beginPath(); ctx.moveTo(x, PAD.top); ctx.lineTo(x, PAD.top + cH); ctx.stroke();
+        ctx.fillStyle    = cText3;
+        ctx.font         = '10px Inter, system-ui, sans-serif';
+        ctx.textAlign    = 'center';
+        ctx.textBaseline = 'top';
+        ctx.fillText(((t - t0) / 1000).toFixed(1) + 's', x, PAD.top + cH + 8);
+      }
+
+      /* Limit band fill */
+      if (lowerLimit !== null && upperLimit !== null) {
+        const llY = toY(lowerLimit);
+        const ulY = toY(upperLimit);
+        ctx.fillStyle = 'rgba(34,197,94,0.07)';
+        ctx.fillRect(PAD.left, Math.min(llY, ulY), cW, Math.abs(llY - ulY));
+
+        [['LL', lowerLimit], ['UL', upperLimit]].forEach(([label, val]) => {
+          const y = toY(val);
+          ctx.strokeStyle = cDanger;
+          ctx.lineWidth   = 1.5;
+          ctx.setLineDash([6, 4]);
+          ctx.beginPath(); ctx.moveTo(PAD.left, y); ctx.lineTo(PAD.left + cW, y); ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.fillStyle    = cDanger;
+          ctx.font         = '600 10px Inter, system-ui, sans-serif';
+          ctx.textAlign    = 'left';
+          ctx.textBaseline = 'bottom';
+          ctx.fillText(label + ': ' + fmtVal(val, units), PAD.left + 6, y - 3);
+        });
+      }
+
+      /* Data line */
+      ctx.setLineDash([]);
+      ctx.lineWidth   = 2;
+      ctx.strokeStyle = cPrimary;
+      ctx.lineJoin    = 'round';
+      ctx.beginPath();
+      points.forEach((p, i) => {
+        const x = toX(p.timestamp), y = toY(p.value);
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+
+      /* Data points — skip dots when dense */
+      const r = points.length > 100 ? 0 : 3;
+      if (r > 0) {
+        points.forEach(p => {
+          ctx.beginPath();
+          ctx.arc(toX(p.timestamp), toY(p.value), r, 0, Math.PI * 2);
+          ctx.fillStyle = p.inRange === false ? cDanger : cSuccess;
+          ctx.fill();
+        });
+      }
+
+      /* Axes border */
+      ctx.strokeStyle = cBorder;
+      ctx.lineWidth   = 1;
+      ctx.strokeRect(PAD.left, PAD.top, cW, cH);
+
+      /* Axis labels */
+      ctx.fillStyle    = cText2;
+      ctx.font         = '11px Inter, system-ui, sans-serif';
+      ctx.textAlign    = 'center';
+      ctx.textBaseline = 'alphabetic';
+      ctx.fillText('Elapsed time (s)', PAD.left + cW / 2, H - 6);
+      if (units) {
+        ctx.save();
+        ctx.translate(12, PAD.top + cH / 2);
+        ctx.rotate(-Math.PI / 2);
+        ctx.textBaseline = 'middle';
+        ctx.fillText(units, 0, 0);
+        ctx.restore();
+      }
+    }
+
+    /* ── WebSocket ───────────────────────────────────────── */
+    const formIds = ['command_id', 'instrument_id', 'measurement_id', 'interval_ms'];
+
+    function setFormDisabled(disabled) {
+      formIds.forEach(id => { document.getElementById(id).disabled = disabled; });
+    }
+
+    document.getElementById('start-btn').addEventListener('click', () => {
+      const config = {
+        command_id:     document.getElementById('command_id').value,
+        instrument_id:  document.getElementById('instrument_id').value,
+        measurement_id: document.getElementById('measurement_id').value || null,
+        interval_ms:    parseInt(document.getElementById('interval_ms').value, 10),
+      };
+
+      wsConn = new WebSocket(`ws://${location.host}/monitor/ws`);
+
+      wsConn.addEventListener('open', () => {
+        wsConn.send(JSON.stringify(config));
+        stateEl.textContent = 'Running';
+        stateEl.className   = 'badge badge-success';
+        document.getElementById('start-btn').hidden = true;
+        document.getElementById('stop-btn').hidden  = false;
+        setFormDisabled(true);
+      });
+
+      wsConn.addEventListener('message', e => {
+        const msg = JSON.parse(e.data);
+
+        if (msg.error) {
+          stateEl.textContent = 'Error';
+          stateEl.className   = 'badge badge-danger';
+          return;
+        }
+
+        const hasLimits = msg.lower_limit != null && msg.upper_limit != null;
+        const inRange   = hasLimits
+          ? (msg.value >= parseFloat(msg.lower_limit) && msg.value <= parseFloat(msg.upper_limit))
+          : null;
+
+        points.push({ value: msg.value, timestamp: msg.timestamp, inRange });
+        if (points.length > MAX_POINTS) points.shift();
+
+        if (hasLimits) {
+          lowerLimit = parseFloat(msg.lower_limit);
+          upperLimit = parseFloat(msg.upper_limit);
+        }
+        units       = msg.units        || '';
+        measureName = msg.name         || '';
+
+        stats.count++;
+        stats.min  = Math.min(stats.min, msg.value);
+        stats.max  = Math.max(stats.max, msg.value);
+        stats.sum += msg.value;
+
+        /* Update stats panel */
+        document.getElementById('stat-latest').textContent = fmtVal(msg.value, units);
+        document.getElementById('stat-min').textContent    = fmtVal(stats.min,  units);
+        document.getElementById('stat-max').textContent    = fmtVal(stats.max,  units);
+        document.getElementById('stat-mean').textContent   = fmtVal(stats.sum / stats.count, units);
+        document.getElementById('stat-count').textContent  = stats.count;
+
+        /* Update chart title */
+        if (measureName) titleEl.textContent = measureName;
+
+        /* In-range badge */
+        if (inRange !== null) {
+          rangeBadge.hidden    = false;
+          rangeBadge.textContent = inRange ? 'IN RANGE' : 'OUT OF RANGE';
+          rangeBadge.className   = 'badge ' + (inRange ? 'badge-success' : 'badge-danger');
+        }
+
+        scheduleRedraw();
+      });
+
+      wsConn.addEventListener('close', () => {
+        stateEl.textContent = 'Idle';
+        stateEl.className   = 'badge badge-neutral';
+        document.getElementById('start-btn').hidden = false;
+        document.getElementById('stop-btn').hidden  = true;
+        setFormDisabled(false);
+        scheduleRedraw(); /* final draw */
+      });
+
+      wsConn.addEventListener('error', () => {
+        stateEl.textContent = 'Error';
+        stateEl.className   = 'badge badge-danger';
+      });
+    });
+
+    document.getElementById('stop-btn').addEventListener('click', () => {
+      if (wsConn) wsConn.close();
+    });
+
+    document.getElementById('clear-btn').addEventListener('click', () => {
+      points      = [];
+      lowerLimit  = null;
+      upperLimit  = null;
+      units       = '';
+      measureName = '';
+      stats       = { min: Infinity, max: -Infinity, sum: 0, count: 0 };
+      titleEl.textContent        = 'Real-Time Trend';
+      rangeBadge.hidden          = true;
+      ['stat-latest','stat-min','stat-max','stat-mean','stat-count']
+        .forEach(id => { document.getElementById(id).textContent = '—'; });
+      scheduleRedraw();
+    });
+
+    /* ── Resize observer ─────────────────────────────────── */
+    new ResizeObserver(resizeCanvas).observe(wrap);
+    resizeCanvas();
+  </script>
+{% endblock %}
