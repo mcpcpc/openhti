@@ -27,80 +27,83 @@
     <div class="test-panel">
       <div class="card">
         <div class="card-body">
-          <div class="form-group">
-            <label class="form-label" for="command_id">Command</label>
-            <select class="form-select" id="command_id">
-              {% if commands %}
-                {% for command in commands %}
-                <option value="{{ command.id }}">{{ command.name }}</option>
+          <!-- Configuration Section -->
+          <div class="card-section">
+            <div class="form-group">
+              <label class="form-label" for="command_id">Command</label>
+              <select class="form-select" id="command_id">
+                {% if commands %}
+                  {% for command in commands %}
+                  <option value="{{ command.id }}">{{ command.name }}</option>
+                  {% endfor %}
+                {% else %}
+                  <option value="" disabled>No commands configured</option>
+                {% endif %}
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="instrument_id">Instrument</label>
+              <select class="form-select" id="instrument_id">
+                {% if instruments %}
+                  {% for instrument in instruments %}
+                  <option value="{{ instrument.id }}">{{ instrument.name }}</option>
+                  {% endfor %}
+                {% else %}
+                  <option value="" disabled>No instruments configured</option>
+                {% endif %}
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="measurement_id">
+                Measurement
+                <span style="color:var(--color-text-3);font-weight:400">(limits)</span>
+              </label>
+              <select class="form-select" id="measurement_id">
+                <option value="">None</option>
+                {% for measurement in measurements %}
+                <option value="{{ measurement.id }}">{{ measurement.name }}</option>
                 {% endfor %}
-              {% else %}
-                <option value="" disabled>No commands configured</option>
-              {% endif %}
-            </select>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="interval_ms">Sampling Rate</label>
+              <select class="form-select" id="interval_ms">
+                <option value="10">10 ms</option>
+                <option value="100">100 ms</option>
+                <option value="500" selected>500 ms</option>
+                <option value="1000">1 s</option>
+                <option value="10000">10 s</option>
+              </select>
+            </div>
           </div>
-          <div class="form-group">
-            <label class="form-label" for="instrument_id">Instrument</label>
-            <select class="form-select" id="instrument_id">
-              {% if instruments %}
-                {% for instrument in instruments %}
-                <option value="{{ instrument.id }}">{{ instrument.name }}</option>
-                {% endfor %}
-              {% else %}
-                <option value="" disabled>No instruments configured</option>
-              {% endif %}
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="measurement_id">
-              Measurement
-              <span style="color:var(--color-text-3);font-weight:400">(limits)</span>
-            </label>
-            <select class="form-select" id="measurement_id">
-              <option value="">None</option>
-              {% for measurement in measurements %}
-              <option value="{{ measurement.id }}">{{ measurement.name }}</option>
-              {% endfor %}
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="interval_ms">Sampling Rate</label>
-            <select class="form-select" id="interval_ms">
-              <option value="10">10 ms</option>
-              <option value="100">100 ms</option>
-              <option value="500" selected>500 ms</option>
-              <option value="1000">1 s</option>
-              <option value="10000">10 s</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-body">
-          <div class="data-row">
-            <span class="data-label">Status</span>
-            <span id="monitor-state" class="badge badge-neutral">Idle</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Latest</span>
-            <span class="data-value" id="stat-latest">—</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Min</span>
-            <span class="data-value" id="stat-min">—</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Max</span>
-            <span class="data-value" id="stat-max">—</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Mean</span>
-            <span class="data-value" id="stat-mean">—</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Samples</span>
-            <span class="data-value" id="stat-count">—</span>
+          <div class="card-divider"></div>
+          <!-- Statistics Section -->
+          <div class="card-section">
+            <p class="card-section-title">Statistics</p>
+            <div class="data-row">
+              <span class="data-label">Status</span>
+              <span id="monitor-state" class="badge badge-neutral">Idle</span>
+            </div>
+            <div class="data-row">
+              <span class="data-label">Latest</span>
+              <span class="data-value" id="stat-latest">—</span>
+            </div>
+            <div class="data-row">
+              <span class="data-label">Min</span>
+              <span class="data-value" id="stat-min">—</span>
+            </div>
+            <div class="data-row">
+              <span class="data-label">Max</span>
+              <span class="data-value" id="stat-max">—</span>
+            </div>
+            <div class="data-row">
+              <span class="data-label">Mean</span>
+              <span class="data-value" id="stat-mean">—</span>
+            </div>
+            <div class="data-row">
+              <span class="data-label">Samples</span>
+              <span class="data-value" id="stat-count">—</span>
+            </div>
           </div>
         </div>
       </div>

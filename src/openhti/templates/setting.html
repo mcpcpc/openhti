@@ -61,36 +61,38 @@
     </div>
 
     <!-- Danger zone -->
-    <div style="display:flex;flex-direction:column;gap:var(--s4)">
-      <div class="card">
-        <div class="card-header">
-          <span class="card-title">Database Health</span>
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Database Management</span>
+      </div>
+      <div class="card-body">
+        <!-- Health Check Section -->
+        <div class="card-section">
+          <p class="card-section-title">Health Status</p>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--s3)">
+            <span class="data-label">Database State</span>
+            {% if dirty %}
+            <span class="badge badge-danger">Dirty</span>
+            {% else %}
+            <span class="badge badge-success">Clean</span>
+            {% endif %}
+          </div>
           {% if dirty %}
-          <span class="badge badge-danger">Dirty</span>
-          {% else %}
-          <span class="badge badge-success">Clean</span>
-          {% endif %}
-        </div>
-        <div class="card-body">
-          {% if dirty %}
-          <p class="card-description">
+          <p class="card-description" style="margin-bottom:var(--s4)">
             The database is <strong>dirty</strong> — one or more tables have been modified since the last known state.
           </p>
           {% else %}
-          <p class="card-description">
+          <p class="card-description" style="margin-bottom:var(--s4)">
             The database is <strong>clean</strong> — no table modifications since the last known state.
           </p>
           {% endif %}
           <a class="btn btn-danger" href="{{ url_for('.clean') }}">Reset Validator</a>
         </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <span class="card-title">Database Reset</span>
-        </div>
-        <div class="card-body">
-          <p class="card-description">
+        <div class="card-divider"></div>
+        <!-- Database Reset Section -->
+        <div class="card-section">
+          <p class="card-section-title">Reset Database</p>
+          <p class="card-description" style="margin-bottom:var(--s4)">
             Resetting the database is <strong>destructive</strong> and will wipe all recipes, settings, and the application password.
           </p>
           <a class="btn btn-danger" href="{{ url_for('.reset') }}">Reset Database</a>

@@ -22,54 +22,57 @@
     <div class="test-panel">
       <div class="card">
         <div class="card-body">
-          <form id="evaluate" onsubmit="return send(event)" method="post">
-            <div class="form-group">
-              <label class="form-label" for="procedure_id">Procedure</label>
-              <select name="procedure_id" class="form-select" id="procedure_id" required>
-                {% for procedure in procedures %}
-                <option value="{{ procedure.id }}">{{ procedure.name }}</option>
-                {% endfor %}
-              </select>
+          <!-- Input Section -->
+          <div class="card-section">
+            <form id="evaluate" onsubmit="return send(event)" method="post">
+              <div class="form-group">
+                <label class="form-label" for="procedure_id">Procedure</label>
+                <select name="procedure_id" class="form-select" id="procedure_id" required>
+                  {% for procedure in procedures %}
+                  <option value="{{ procedure.id }}">{{ procedure.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="label">Serial Label</label>
+                <input name="label" type="text" class="form-control" id="label"
+                       autocomplete="off" autofocus required placeholder="Scan or type…">
+              </div>
+            </form>
+          </div>
+          <div class="card-divider"></div>
+          <!-- Status Section -->
+          <div class="card-section">
+            <p class="card-section-title">Status</p>
+            <div class="data-row">
+              <span class="data-label">Test Status</span>
+              <span id="state" class="badge badge-neutral">—</span>
             </div>
-            <div class="form-group">
-              <label class="form-label" for="label">Serial Label</label>
-              <input name="label" type="text" class="form-control" id="label"
-                     autocomplete="off" autofocus required placeholder="Scan or type…">
+          </div>
+          <div class="card-divider"></div>
+          <!-- Part Data Section -->
+          <div class="card-section">
+            <p class="card-section-title">Unit Under Test</p>
+            <div class="data-row">
+              <span class="data-label">GTIN</span>
+              <code class="text-code" id="global_trade_item_number">—</code>
             </div>
-          </form>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-body">
-          <div class="data-row">
-            <span class="data-label">Test Status</span>
-            <span id="state" class="badge badge-neutral">—</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-body">
-          <div class="data-row">
-            <span class="data-label">GTIN</span>
-            <code class="text-code" id="global_trade_item_number">—</code>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Serial Number</span>
-            <code class="text-code" id="serial_number">—</code>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Part Name</span>
-            <span class="data-value" id="part_name">—</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Part Number</span>
-            <span class="data-value" id="part_number">—</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Revision</span>
-            <span class="data-value" id="revision">—</span>
+            <div class="data-row">
+              <span class="data-label">Serial Number</span>
+              <code class="text-code" id="serial_number">—</code>
+            </div>
+            <div class="data-row">
+              <span class="data-label">Part Name</span>
+              <span class="data-value" id="part_name">—</span>
+            </div>
+            <div class="data-row">
+              <span class="data-label">Part Number</span>
+              <span class="data-value" id="part_number">—</span>
+            </div>
+            <div class="data-row">
+              <span class="data-label">Revision</span>
+              <span class="data-value" id="revision">—</span>
+            </div>
           </div>
         </div>
       </div>
