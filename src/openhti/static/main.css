@@ -41,6 +41,8 @@ a { color: inherit; text-decoration: none }
 
   --sidebar-w: 232px;
   --bottom-nav-h: 68px;
+  --table-select-col-w: 48px;
+  --table-action-col-w: 56px;
 
   /* Light palette */
   --color-bg:              #F1F3F8;
@@ -415,21 +417,40 @@ a { color: inherit; text-decoration: none }
 }
 .table tbody td {
   padding: var(--s3) var(--s4); color: var(--color-text-2);
-  border-bottom: 1px solid var(--color-border); vertical-align: middle;
+  border-bottom: none; vertical-align: middle;
   white-space: nowrap;
+}
+.table tbody tr { box-shadow: inset 0 -1px 0 var(--color-border) }
+/* Keep checkbox and action icon columns visually stable across table variants */
+.table thead th:first-child,
+.table tbody td:first-child {
+  width: var(--table-select-col-w);
+  min-width: var(--table-select-col-w);
+  max-width: var(--table-select-col-w);
+  text-align: center;
+  padding-left: var(--s2);
+  padding-right: var(--s2);
+}
+.table thead th:last-child,
+.table tbody td:last-child {
+  width: var(--table-action-col-w);
+  min-width: var(--table-action-col-w);
+  max-width: var(--table-action-col-w);
+  padding-left: var(--s2);
+  padding-right: var(--s2);
 }
 .td-truncate {
   max-width: 220px; overflow: hidden;
   text-overflow: ellipsis; white-space: nowrap;
 }
-.table tbody tr:last-child td { border-bottom: none }
+.table tbody tr:last-child { box-shadow: none }
 .table tbody tr:hover td { background: var(--color-neutral-subtle); color: var(--color-text) }
 .table code {
   font-family: 'SFMono-Regular', Consolas, monospace; font-size: var(--text-xs);
   background: var(--color-neutral-subtle); padding: 2px 6px;
   border-radius: var(--r-sm); color: var(--color-primary);
 }
-.table-actions { display: flex; align-items: center; gap: var(--s2); justify-content: flex-end }
+.table-actions { display: flex; align-items: center; gap: var(--s2); justify-content: center; width: 100% }
 .table-empty { text-align: center; padding: var(--s6); color: var(--color-text-3) }
 
 /* --- Badges ------------------------------------------------ */
