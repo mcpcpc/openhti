@@ -1,136 +1,118 @@
 {% extends 'base.htm' %}
 {% block title %}Phases{% endblock %}
 {% block container %}
-        <div class="toolbar mb-5">
-          <div class=" container-fluid d-flex flex-stack flex-wrap flex-sm-nowrap" style="align-items: center; justify-content: space-between">
-            <div class="d-flex flex-column align-items-start justify-content-center flex-wrap me-2">
-              <h1 class="mb-1 fw-bold fs-4">Phase Management</h1>
-              <ul class="breadcrumb fw-semibold fs-base my-1">
-                <li class="breadcrumb-item text-secondary">
-                  <a href="{{ url_for('home') }}" class="text-secondary text-hover-primary" style="text-decoration: none">Home</a>
-                </li>
-                <li class="breadcrumb-item text-muted">Manage</li>
-                <li class="breadcrumb-item text-emphasis">Phases</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        {% for category, message in messages %}
-        <div class="alert alert-{{ category }} border-0" role="alert">
-          {{ message }}
-        </div>
-        {% endfor %}
-        {% endif %}
-        {% endwith %}
-        <div class="container-xl p-3 rounded-3 bg-body-tertiary mb-5">
-          <div class="card bg-body shadow-sm border-0">
-            <div class="card-header bg-body border-0 p-3 d-flex justify-content-end align-items-center">
-              <div class="d-flex">
-                <button class="btn btn-secondary btn-sm icon-link me-2" form="delete">
-                  <svg class="bi">
-                    <use href="{{ url_for('static', filename='keen-icons.svg') }}#trush">
-                  </svg>
-                  Delete
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1 class="page-title">Phases</h1>
+    </div>
+    <div class="page-header-actions">
+      <button class="btn btn-secondary" form="delete">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+        Delete
+      </button>
+      <button class="btn btn-primary" onclick="showModal('createModal')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        New
+      </button>
+    </div>
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  {% for category, message in messages %}
+  <div class="alert alert-{{ category }}" role="alert">{{ message }}</div>
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
+
+  <div class="card">
+    <div class="table-wrapper">
+      <form id="delete" action="{{ url_for('.delete') }}" method="post">
+        <table class="table">
+          <thead>
+            <tr>
+              <th><input class="form-check-input" type="checkbox" onclick="selectAll(this)"></th>
+              <th>Name</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for phase in phases %}
+            <tr>
+              <td><input class="form-check-input" type="checkbox" name="phase_id" value="{{ phase.id }}"></td>
+              <td>{{ phase.name }}</td>
+              <td class="table-actions">
+                <button type="button" class="btn btn-ghost btn-icon" aria-label="Edit"
+                  onclick="populateUpdateModal('{{ phase.id }}','{{ phase.name }}')">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
                 </button>
-                <button class="btn btn-primary btn-sm icon-link" data-bs-toggle="modal" data-bs-target="#createModal">
-                  <svg class="bi">
-                    <use href="{{ url_for('static', filename='keen-icons.svg') }}#plus">
-                  </svg>
-                  New
-                </button>
-              </div>
-            </div>
-            <div class="card-body">
-              <form id="delete" action="{{ url_for('.delete') }}" method="post">
-                <div class="table-responsive">
-                  <table class="table table-borderless">
-                    <thead>
-                      <tr>
-                        <th scope="col"><input class="form-check-input" type="checkbox" onClick="selectAll(this)" /></th>
-                        <th scope="col" class="w-100">Name</th>
-                        <th scope="col"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for phase in phases %}
-                      <tr>
-                        <td scope="row"><input class="form-check-input" type="checkbox" name="phase_id" value="{{ phase.id }}" /></td>
-                        <td class="text-nowrap">{{ phase.name }}</td>
-                        <td>
-                          <a class="link-secondary icon-link" data-bs-toggle="modal" href="#" data-bs-target="#updateModal" onclick="populateUpdateModal('{{ phase.id }}', '{{ phase.name }}')">
-                            <svg class="bi">
-                              <use href="{{ url_for('static', filename='keen-icons.svg') }}#pencxil">
-                            </svg>
-                          </a>
-                        </td>
-                      </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
-                </div>
-              </form>
-            </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </form>
+    </div>
+  </div>
+
+  <!-- Create Modal -->
+  <div class="modal" id="createModal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-container">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <h2 class="modal-title">Create Phase</h2>
+        <button class="modal-close" onclick="hideModal('createModal')" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="create" action="{{ url_for('.create') }}" method="post">
+          <div class="form-group">
+            <label class="form-label">Phase Name</label>
+            <input type="text" class="form-control" name="name" placeholder="e.g. Setup" required>
           </div>
-        </div>
-        <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header border-0">
-                <h1 class="modal-title fs-5" id="createModalLabel">Create Phase</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                <form id="create" action="{{ url_for('.create') }}" method="post">
-                  <div class="mb-3">
-                    <label for="name" class="col-form-label">Phase Name</label>
-                    <input type="text" class="form-control" name="name" placeholder="i.e. Setup" required>
-                  </div>
-                </form>
-              </div>
-              <div class="modal-footer border-0">
-                <button type="reset" form="create" class="btn btn-secondary">Clear</button>
-                <button type="submit" form="create" class="btn btn-primary">Create</button>
-              </div>
-            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="reset" form="create" class="btn btn-secondary">Clear</button>
+        <button type="submit" form="create" class="btn btn-primary">Create</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Update Modal -->
+  <div class="modal" id="updateModal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-container">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <h2 class="modal-title">Update Phase</h2>
+        <button class="modal-close" onclick="hideModal('updateModal')" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="update" action="{{ url_for('.update') }}" method="post">
+          <div class="form-group">
+            <label class="form-label">ID</label>
+            <input type="number" class="form-control" id="id" name="id" readonly>
           </div>
-        </div>
-        <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header border-0">
-                <h1 class="modal-title fs-5" id="updateModalLabel">Update Phase</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                <form id="update" action="{{ url_for('.update') }}" method="post">
-                  <div class="mb-3">
-                    <label for="id" class="col-form-label">ID</label>
-                    <input type="number" class="form-control" id="id" name="id" readonly>
-                  </div>
-                  <div class="mb-3">
-                    <label for="name" class="col-form-label">Phase Name</label>
-                    <input type="text" class="form-control" id="name" name="name" placeholder="i.e. Setup" required>
-                  </div>
-                </form>
-              </div>
-              <div class="modal-footer border-0">
-                <button type="submit" form="update" class="btn btn-primary">Update</button>
-              </div>
-            </div>
+          <div class="form-group">
+            <label class="form-label">Phase Name</label>
+            <input type="text" class="form-control" id="name" name="name" required>
           </div>
-        </div>
-        <script type="text/javascript">
-          function selectAll(source) {
-            checkboxes = document.getElementsByName('phase_id');
-            for(var i=0, n=checkboxes.length;i<n;i++) {
-              checkboxes[i].checked = source.checked;
-            }
-          }
-          function populateUpdateModal(id, name) {
-            document.getElementById("id").value = id;
-            document.getElementById("name").value = name;
-          }
-        </script>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="hideModal('updateModal')">Cancel</button>
+        <button type="submit" form="update" class="btn btn-primary">Update</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function populateUpdateModal(id, name) {
+      document.getElementById("id").value   = id;
+      document.getElementById("name").value = name;
+      showModal('updateModal');
+    }
+  </script>
 {% endblock %}
+

@@ -1,47 +1,48 @@
 {% extends 'base.htm' %}
 {% block title %}Home{% endblock %}
 {% block container %}
-        <div class="toolbar mb-5">
-          <div class=" container-fluid d-flex flex-stack flex-wrap flex-sm-nowrap" style="align-items: center; justify-content: space-between">
-            <div class="d-flex flex-column align-items-start justify-content-center flex-wrap me-2">
-              <h1 class="mb-1 fw-bold fs-4">Mode Select</h1>
-              <ul class="breadcrumb fw-semibold fs-base my-1">
-                <li class="breadcrumb-item text-secondary">
-                  <a href="{{ url_for('home') }}" class="text-secondary text-hover-primary" style="text-decoration: none">Home</a>
-                  <li class="breadcrumb-item text-emphasis">Select</li>
-                </li>
-              </ul>
-            </div>
-          </div>
+  <div class="page-header">
+    <div class="page-header-left">
+      <h1 class="page-title">Mode Select</h1>
+
+    </div>
+  </div>
+
+  <div class="mode-grid">
+    <a href="{{ url_for('automatic.read') }}" class="mode-card">
+      <div>
+        <div class="mode-card-icon primary">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
+          </svg>
         </div>
-        <div class="container-xl p-3 rounded-3 bg-body-tertiary mb-5">
-          <div class="card bg-body shadow-sm border-0 mb-3">
-            <div class="card-body">
-              <h5 class="card-title">Automatic</h5>
-              <p class="card-text">
-                Automatically run a set of pre-defined test recipes. You only need to scan or type the device's serial label, and the tests will run without further input. Recommended for routine testing (i.e. production devices).
-              </p>
-              <a href="{{ url_for('automatic.read') }}" class="btn btn-primary icon-link">
-                Start Automatic Testing
-                <svg class="bi">
-                  <use href="{{ url_for('static', filename="keen-icons.svg") }}#arrow-right">
-                </svg>
-              </a>
-            </div>
-          </div>
-          <div class="card bg-body shadow-sm border-0">
-            <div class="card-body">
-              <h5 class="card-title">Manual</h5>
-              <p class="card-text">
-                Select and run individual test recipes one by one. This option does not require a serial label and is ideal for troubleshooting or verifying specific recipes.
-              </p>
-              <a href="{{ url_for('manual.read') }}" class="btn btn-warning icon-link">
-                Start Manual Testing
-                <svg class="bi">
-                  <use href="{{ url_for('static', filename="keen-icons.svg") }}#arrow-right">
-                </svg>
-              </a>
-            </div>
-          </div>
+        <div class="mode-card-title">Automatic</div>
+        <p class="mode-card-desc">
+          Automatically run pre-defined test recipes. Scan or type the device serial label and tests run without further input — ideal for routine production testing.
+        </p>
+      </div>
+      <button class="btn btn-primary" tabindex="-1">
+        Start Automatic Testing
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+    </a>
+
+    <a href="{{ url_for('manual.read') }}" class="mode-card">
+      <div>
+        <div class="mode-card-icon warning">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M13 2.05v2.02c3.95.49 7 3.85 7 7.93 0 3.21-1.81 6-4.72 7.72L13 17v5h5l-1.22-1.22C19.91 19.07 22 15.76 22 12c0-5.18-3.95-9.45-9-9.95zM11 2.05C5.95 2.55 2 6.82 2 12c0 3.76 2.09 7.07 5.22 8.78L6 22h5V2.05z"/>
+          </svg>
         </div>
+        <div class="mode-card-title">Manual</div>
+        <p class="mode-card-desc">
+          Select and run individual test recipes one by one. No serial label required — perfect for troubleshooting or verifying specific recipes in isolation.
+        </p>
+      </div>
+      <button class="btn btn-warning" tabindex="-1">
+        Start Manual Testing
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+    </a>
+  </div>
 {% endblock %}
