@@ -58,12 +58,12 @@
             {% for recipe in recipes %}
             <tr>
               <td><input class="form-check-input" type="checkbox" name="recipe_id" value="{{ recipe.id }}"></td>
-              <td>{{ recipe.procedure }}</td>
-              <td>{{ recipe.part }}</td>
-              <td>{{ recipe.phase }}</td>
-              <td>{{ recipe.instrument }}</td>
-              <td>{{ recipe.command }}</td>
-              <td>{{ recipe.measurement }}</td>
+              <td class="td-truncate">{{ recipe.procedure }}</td>
+              <td class="td-truncate">{{ recipe.part }}</td>
+              <td class="td-truncate">{{ recipe.phase }}</td>
+              <td class="td-truncate">{{ recipe.instrument }}</td>
+              <td class="td-truncate">{{ recipe.command }}</td>
+              <td class="td-truncate">{{ recipe.measurement }}</td>
               <td class="table-actions">
                 <button type="button" class="btn btn-ghost btn-icon" aria-label="Edit"
                   onclick="populateUpdateModal('{{ recipe.id }}','{{ recipe.procedure_id }}','{{ recipe.part_id }}','{{ recipe.phase_id }}','{{ recipe.instrument_id }}','{{ recipe.command_id }}','{{ recipe.measurement_id }}')">

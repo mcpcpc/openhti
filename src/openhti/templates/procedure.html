@@ -41,8 +41,8 @@
             {% for procedure in procedures %}
             <tr>
               <td><input class="form-check-input" type="checkbox" name="procedure_id" value="{{ procedure.id }}"></td>
-              <td><code>{{ procedure.pid }}</code></td>
-              <td>{{ procedure.name }}</td>
+              <td class="td-truncate"><code>{{ procedure.pid }}</code></td>
+              <td class="td-truncate">{{ procedure.name }}</td>
               <td class="table-actions">
                 <button type="button" class="btn btn-ghost btn-icon" aria-label="Edit"
                   onclick="populateUpdateModal('{{ procedure.id }}','{{ procedure.name }}','{{ procedure.pid }}')">

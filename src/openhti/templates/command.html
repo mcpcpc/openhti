@@ -42,8 +42,8 @@
             {% for command in commands %}
             <tr>
               <td><input class="form-check-input" type="checkbox" name="command_id" value="{{ command.id }}"></td>
-              <td>{{ command.name }}</td>
-              <td><code>{{ command.scpi }}</code></td>
+              <td class="td-truncate">{{ command.name }}</td>
+              <td class="td-truncate"><code>{{ command.scpi }}</code></td>
               <td>{{ command.delay }}</td>
               <td class="table-actions">
                 <button type="button" class="btn btn-ghost btn-icon" aria-label="Edit"

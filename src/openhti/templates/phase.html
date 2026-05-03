@@ -40,7 +40,7 @@
             {% for phase in phases %}
             <tr>
               <td><input class="form-check-input" type="checkbox" name="phase_id" value="{{ phase.id }}"></td>
-              <td>{{ phase.name }}</td>
+              <td class="td-truncate">{{ phase.name }}</td>
               <td class="table-actions">
                 <button type="button" class="btn btn-ghost btn-icon" aria-label="Edit"
                   onclick="populateUpdateModal('{{ phase.id }}','{{ phase.name }}')">

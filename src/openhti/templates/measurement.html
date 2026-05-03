@@ -44,7 +44,7 @@
             {% for measurement in measurements %}
             <tr>
               <td><input class="form-check-input" type="checkbox" name="measurement_id" value="{{ measurement.id }}"></td>
-              <td>{{ measurement.name }}</td>
+              <td class="td-truncate">{{ measurement.name }}</td>
               <td>{{ measurement.precision }}</td>
               <td>{{ measurement.units }}</td>
               <td>{{ measurement.lower_limit }}</td>

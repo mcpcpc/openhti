@@ -118,7 +118,6 @@
       const data = {};
       new FormData(event.target).forEach((v, k) => data[k] = v);
       websocket.send(JSON.stringify(data));
-      event.target.reset();
       return false;
     }
   </script>

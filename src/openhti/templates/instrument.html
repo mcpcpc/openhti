@@ -42,8 +42,8 @@
             {% for instrument in instruments %}
             <tr>
               <td><input class="form-check-input" type="checkbox" name="instrument_id" value="{{ instrument.id }}"></td>
-              <td>{{ instrument.name }}</td>
-              <td><code>{{ instrument.hostname }}</code></td>
+              <td class="td-truncate">{{ instrument.name }}</td>
+              <td class="td-truncate"><code>{{ instrument.hostname }}</code></td>
               <td>{{ instrument.port }}</td>
               <td class="table-actions">
                 <button type="button" class="btn btn-ghost btn-icon" aria-label="Edit"
