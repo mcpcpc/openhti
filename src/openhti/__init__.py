@@ -51,7 +51,8 @@ def create_app(test_config: dict = None) -> Quart:
 
     app = Quart(__name__, instance_relative_config=True)
     app.config.from_mapping(
-        SECRET_KEY="dev",
+        # Must be >= 32 bytes for HS256 to avoid insecure key warnings.
+        SECRET_KEY="openhti-dev-secret-key-change-me-32bytes-min",
         DATABASE=join(app.instance_path, "openhti.db"),
     )
     if test_config is None:

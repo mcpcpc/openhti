@@ -173,7 +173,7 @@ class TestTokenDecorator(IsolatedAsyncioTestCase):
         exp = datetime.now(tz=timezone.utc) + delta
         token = encode(
             payload={"confirm": "42", "exp": exp},
-            key="wrong_secret_key",
+            key="this-is-a-deliberately-wrong-but-long-test-secret-key",
             algorithm="HS256",
         )
         response = await self.client.get(
