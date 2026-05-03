@@ -55,6 +55,10 @@
                 </button>
               </td>
             </tr>
+            {% else %}
+            <tr>
+              <td colspan="6" class="table-empty">No parts yet. Click <strong>New</strong> to create one.</td>
+            </tr>
             {% endfor %}
           </tbody>
         </table>

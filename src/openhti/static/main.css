@@ -409,6 +409,7 @@ a { color: inherit; text-decoration: none }
   border-radius: var(--r-sm); color: var(--color-primary);
 }
 .table-actions { display: flex; align-items: center; gap: var(--s2); justify-content: flex-end }
+.table-empty { text-align: center; padding: var(--s6); color: var(--color-text-3) }
 
 /* --- Badges ------------------------------------------------ */
 .badge {

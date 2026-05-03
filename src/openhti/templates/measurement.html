@@ -56,6 +56,10 @@
                 </button>
               </td>
             </tr>
+            {% else %}
+            <tr>
+              <td colspan="7" class="table-empty">No measurements yet. Click <strong>New</strong> to create one.</td>
+            </tr>
             {% endfor %}
           </tbody>
         </table>

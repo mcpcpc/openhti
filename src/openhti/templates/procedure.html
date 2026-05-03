@@ -50,6 +50,10 @@
                 </button>
               </td>
             </tr>
+            {% else %}
+            <tr>
+              <td colspan="4" class="table-empty">No procedures yet. Click <strong>New</strong> to create one.</td>
+            </tr>
             {% endfor %}
           </tbody>
         </table>

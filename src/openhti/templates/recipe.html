@@ -71,6 +71,10 @@
                 </button>
               </td>
             </tr>
+            {% else %}
+            <tr>
+              <td colspan="8" class="table-empty">No recipes yet. Click <strong>New</strong> to create one.</td>
+            </tr>
             {% endfor %}
           </tbody>
         </table>

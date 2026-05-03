@@ -52,6 +52,10 @@
                 </button>
               </td>
             </tr>
+            {% else %}
+            <tr>
+              <td colspan="5" class="table-empty">No instruments yet. Click <strong>New</strong> to create one.</td>
+            </tr>
             {% endfor %}
           </tbody>
         </table>
