@@ -58,6 +58,11 @@
     if (!sidebar) return;
     sidebar.classList.add('open');
     if (overlay) overlay.classList.add('visible');
+    if (overlay) overlay.setAttribute('aria-hidden', 'false');
+    if (menuBtn) {
+      menuBtn.setAttribute('aria-expanded', 'true');
+      menuBtn.setAttribute('aria-label', 'Close menu');
+    }
     document.body.style.overflow = 'hidden';
   }
 
@@ -65,6 +70,11 @@
     if (!sidebar) return;
     sidebar.classList.remove('open');
     if (overlay) overlay.classList.remove('visible');
+    if (overlay) overlay.setAttribute('aria-hidden', 'true');
+    if (menuBtn) {
+      menuBtn.setAttribute('aria-expanded', 'false');
+      menuBtn.setAttribute('aria-label', 'Open menu');
+    }
     document.body.style.overflow = '';
   }
 
@@ -73,9 +83,22 @@
     const menu = btn.nextElementSibling;
     if (!menu) return;
     const isOpen = menu.classList.contains('open');
-    // close all
-    document.querySelectorAll('.filter-menu.open').forEach(m => m.classList.remove('open'));
-    if (!isOpen) menu.classList.add('open');
+    // close all and reset ARIA state
+    document.querySelectorAll('.filter-dropdown').forEach(dropdown => {
+      const dropdownBtn = dropdown.querySelector('button');
+      const dropdownMenu = dropdown.querySelector('.filter-menu');
+      if (dropdownMenu) {
+        dropdownMenu.classList.remove('open');
+        dropdownMenu.setAttribute('aria-hidden', 'true');
+      }
+      if (dropdownBtn) dropdownBtn.setAttribute('aria-expanded', 'false');
+    });
+
+    if (!isOpen) {
+      menu.classList.add('open');
+      menu.setAttribute('aria-hidden', 'false');
+      btn.setAttribute('aria-expanded', 'true');
+    }
   };
 
   /* ── Select-all checkboxes ──────────────────────────────── */
@@ -103,7 +126,15 @@
     }
     /* Filter dropdown close when clicking outside */
     if (!e.target.closest('.filter-dropdown')) {
-      document.querySelectorAll('.filter-menu.open').forEach(m => m.classList.remove('open'));
+      document.querySelectorAll('.filter-dropdown').forEach(dropdown => {
+        const dropdownBtn = dropdown.querySelector('button');
+        const dropdownMenu = dropdown.querySelector('.filter-menu');
+        if (dropdownMenu) {
+          dropdownMenu.classList.remove('open');
+          dropdownMenu.setAttribute('aria-hidden', 'true');
+        }
+        if (dropdownBtn) dropdownBtn.setAttribute('aria-expanded', 'false');
+      });
     }
   });
 

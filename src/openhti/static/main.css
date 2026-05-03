@@ -180,7 +180,7 @@ a { color: inherit; text-decoration: none }
   background: var(--color-primary-subtle);
   color: var(--color-primary); font-weight: 600;
 }
-.sidebar-link svg { width: 15px; height: 15px; flex-shrink: 0; opacity: .65 }
+.sidebar-link svg { width: 16px; height: 16px; flex-shrink: 0; opacity: .78 }
 .sidebar-link.active svg { opacity: 1 }
 .sidebar-footer {
   padding: var(--s3); border-top: 1px solid var(--color-border);
@@ -223,15 +223,25 @@ a { color: inherit; text-decoration: none }
   display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: 3px;
   padding: var(--s2); border-radius: var(--r-md);
-  color: var(--color-text-3); font-size: .65rem; font-weight: 500;
+  color: var(--color-text-2); font-size: .65rem; font-weight: 500;
   min-width: 52px; min-height: 48px;
   border: none; background: none; cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: color var(--dur-fast), background var(--dur-fast);
 }
 .bottom-nav-item svg { width: 22px; height: 22px }
-.bottom-nav-item.active { color: var(--color-primary) }
+.bottom-nav-item.active { color: var(--color-primary); background: var(--color-primary-subtle) }
 .bottom-nav-item:active { background: var(--color-primary-subtle) }
+
+/* Strong keyboard visibility for interactive controls */
+.sidebar-link:focus-visible,
+.bottom-nav-item:focus-visible,
+.theme-btn:focus-visible,
+.auth-btn:focus-visible,
+.btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
 
 /* --- Mobile breakpoint ------------------------------------- */
 @media (max-width: 767px) {
@@ -332,6 +342,11 @@ a { color: inherit; text-decoration: none }
 .btn-icon {
   padding: var(--s2); min-height: 36px; width: 36px; flex-shrink: 0;
 }
+.btn-icon svg { opacity: .88; transition: opacity var(--dur-fast) }
+.btn-icon:hover svg,
+.btn-icon:focus-visible svg { opacity: 1 }
+.btn-icon:hover { background: var(--color-neutral-subtle); color: var(--color-text) }
+.btn-icon:active { background: var(--color-border-strong) }
 
 /* --- Forms ------------------------------------------------- */
 .form-group { display: flex; flex-direction: column; gap: var(--s1); margin-bottom: var(--s4) }
@@ -591,7 +606,7 @@ body.modal-open { overflow: hidden }
   -webkit-tap-highlight-color: transparent;
 }
 .theme-btn:hover { background: var(--color-border-strong) }
-.theme-btn svg { width: 14px; height: 14px; flex-shrink: 0 }
+.theme-btn svg { width: 15px; height: 15px; flex-shrink: 0 }
 
 /* Theme icon — show only the icon matching the stored preference */
 .theme-icon-light,
@@ -608,7 +623,7 @@ body.modal-open { overflow: hidden }
   transition: background var(--dur-fast);
 }
 .auth-btn:hover { background: var(--color-border-strong); color: var(--color-text) }
-.auth-btn svg { width: 14px; height: 14px; flex-shrink: 0 }
+.auth-btn svg { width: 15px; height: 15px; flex-shrink: 0 }
 
 /* --- Monitor chart ----------------------------------------- */
 .monitor-chart-card {
