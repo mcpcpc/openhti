@@ -141,6 +141,7 @@
     let upperLimit    = null;
     let units         = '';
     let measureName   = '';
+    let precision     = null;
     let stats         = { min: Infinity, max: -Infinity, sum: 0, count: 0 };
     let wsConn        = null;
     let drawPending   = false;
@@ -158,11 +159,13 @@
     }
 
     /* ── Number formatter ────────────────────────────────── */
-    function fmtVal(v, u) {
+    function fmtVal(v, u, p) {
       if (v === null || v === undefined || !isFinite(v)) return '—';
       const abs = Math.abs(v);
       let s;
-      if (abs === 0)        s = '0';
+      if (p !== null && p !== undefined) {
+        s = v.toFixed(p);
+      } else if (abs === 0)        s = '0';
       else if (abs >= 1e6 || abs < 1e-3) s = v.toExponential(3);
       else if (abs >= 100)  s = v.toFixed(2);
       else if (abs >= 10)   s = v.toFixed(3);
@@ -173,7 +176,10 @@
     /* ── Canvas sizing ───────────────────────────────────── */
     function resizeCanvas() {
       const dpr = Math.min(2, window.devicePixelRatio || 1);
-      const cssW = wrap.clientWidth;
+      const wrapStyle = getComputedStyle(wrap);
+      const cssW = wrap.clientWidth
+        - parseFloat(wrapStyle.paddingLeft)
+        - parseFloat(wrapStyle.paddingRight);
       const cssH = Math.max(340, Math.round(cssW * 0.54));
       canvas.width  = Math.round(cssW * dpr);
       canvas.height = Math.round(cssH * dpr);
@@ -381,6 +387,7 @@
         }
         units       = msg.units        || '';
         measureName = msg.name         || '';
+        precision   = msg.precision    ?? null;
 
         stats.count++;
         stats.min  = Math.min(stats.min, msg.value);
@@ -388,10 +395,10 @@
         stats.sum += msg.value;
 
         /* Update stats panel */
-        document.getElementById('stat-latest').textContent = fmtVal(msg.value, units);
-        document.getElementById('stat-min').textContent    = fmtVal(stats.min,  units);
-        document.getElementById('stat-max').textContent    = fmtVal(stats.max,  units);
-        document.getElementById('stat-mean').textContent   = fmtVal(stats.sum / stats.count, units);
+        document.getElementById('stat-latest').textContent = fmtVal(msg.value, units, precision);
+        document.getElementById('stat-min').textContent    = fmtVal(stats.min,  units, precision);
+        document.getElementById('stat-max').textContent    = fmtVal(stats.max,  units, precision);
+        document.getElementById('stat-mean').textContent   = fmtVal(stats.sum / stats.count, units, precision);
         document.getElementById('stat-count').textContent  = stats.count;
 
         /* Update chart title */
@@ -432,6 +439,7 @@
       upperLimit  = null;
       units       = '';
       measureName = '';
+      precision   = null;
       stats       = { min: Infinity, max: -Infinity, sum: 0, count: 0 };
       titleEl.textContent        = 'Real-Time Trend';
       rangeBadge.hidden          = true;
